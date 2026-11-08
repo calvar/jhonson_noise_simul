@@ -101,6 +101,7 @@ since each term is the contraction of the antisymmetric $A_{ij}$ with a symmetri
 {\bf Dissipative and noise part:} $K$ and $D$ have only a $\Phi\Phi$ component, so $J^d$ has only a $\Phi$ component
 \begin{align}
   J_{\Phi}&=-R\frac{\Phi}{L}\rho-\frac{g^2}{2}\frac{\partial\rho}{\partial\Phi}.
+  \label{jphi}
 \end{align}
 The first term is the drift of the flux towards zero due to the resistance, and the second term is the diffusion of the flux due to the Johnson emf. For the Gibbs density
 \begin{align}
@@ -117,10 +118,12 @@ Since the conservative part does not contribute, the Gibbs density is stationary
 which is not identically zero unless the last factor vanishes, the Gibbs density is stationary if and only if
 \begin{align}
   g^2&=2kTR,
+  \label{fdr}
 \end{align}
 in which case the current $J_{\Phi}$ itself vanishes for every $x$: the drift caused by the resistance and the diffusion caused by the noise balance each other at every point. This is the fluctuation-dissipation relation, written in general as $D=2kTK$. With this value of $g$,
 \begin{align}
   \rho&\propto\exp\left(-\frac{p^2}{2MkT}-\frac{\Phi^2}{2L(x)kT}\right),
+  \label{gibbs}
 \end{align}
 which is Gaussian in $p$ and, for each $x$, in $\Phi$, with $\langle p^2\rangle=MkT$ and $\langle\Phi^2|x\rangle=L(x)kT$, that is, $\langle Mv^2\rangle=\langle LI^2\rangle=kT$. Integrating over $p$ and $\Phi$ leaves a density in $x$ proportional to $\sqrt{L(x)}$, so the Gibbs density can be normalized only if $x$ is confined to a bounded range.
 
@@ -129,6 +132,7 @@ which is Gaussian in $p$ and, for each $x$, in $\Phi$, with $\langle p^2\rangle=
   dI&=\frac{\partial I}{\partial x}dx+\frac{\partial I}{\partial\Phi}d\Phi\nonumber\\
   &=-\frac{L'I}{L}v\,dt+\frac{1}{L}\left[(lB_0v-RI)dt+g\,dW\right]\nonumber\\
   &=\left[\frac{lB_0v}{L}-\frac{1}{L}(R+L'v)I\right]dt+\frac{g}{L}dW,
+  \label{dI}
 \end{align}
 which is the circuit equation with the noise amplitude $c(t)=g/L(x(t))=\sqrt{2kTR}/L(x(t))$.
 
@@ -145,6 +149,7 @@ where $d$ is the radius of the wire, $\mu_0$ the magnetic permeability of free s
 where $\rho_{Cu}$ is the resistivity of copper. When $L$ is constant, eliminating $I$ from the equations of motion gives the equation of a damped oscillator for the velocity of the bar
 \begin{align}
   \ddot{v}+2\gamma\dot{v}+\omega^2v&=0,\qquad\gamma=\frac{R}{2L},\qquad\omega^2=\frac{l^2B_0^2}{ML}.
+  \label{oscillator}
 \end{align}
 For two long parallel rails of radius $d$ separated by a distance $l$, neglecting the internal inductance of the wires, $L\simeq(\mu_0x/\pi)\ln(l/d)$ and $R\simeq2\rho_{Cu}x/(\pi d^2)$, so that for $x\rightarrow\infty$
 \begin{align}
@@ -224,6 +229,28 @@ From here on we drop the asterisks for brevity, and all quantities are dimension
   \frac{dI}{dt}&=\frac{4\pi l}{L}v-\frac{1}{L}\left(R+L'v\right)I+\frac{g}{L}\Gamma(t),
 \end{align}
 with $H=p^2/2M+\Phi^2/2L$ and $g=\sqrt{2TR}$.
+
+\subsection{Equilibrium with a moving bar}
+In the first derivation of $g$ in Sec.~1.1 the position $x$ is frozen, and $L$ and $R$ take fixed equilibrium values. In the simulation, however, $x$ changes in time, and the noise amplitude $g/L(x(t))$ of the circuit equation (\ref{dI}) changes with it. Here we argue that this dependence does not prevent the system from reaching equilibrium, and we point out what can.
+
+{\bf The $x$-dependence is harmless:} The first derivation is a heuristic, valid only for fixed $x$, but the second derivation does not freeze $x$. With $g^2=2kTR(x)$, Eq.~(\ref{fdr}), the dissipative plus noise current (\ref{jphi}) vanishes at every point $(x,p,\Phi)$ of phase space, and not only on average, whatever the functions $L(x)$ and $R(x)$ are. The conservative part leaves any function of $H=p^2/2M+\Phi^2/2L(x)$ stationary. Therefore the Gibbs density (\ref{gibbs}) is an exact stationary solution of the full dynamics, with the bar free to move.
+
+In Sec.~1.1 the noise amplitude was treated as a constant, but $g=\sqrt{2kTR(x)}$ depends on $x$. This does not change the argument. The diffusion term of the Fokker-Planck equation is $\frac{1}{2}\partial_\Phi^2(D_{\Phi\Phi}\rho)$, and since $D_{\Phi\Phi}=g(x)^2$ does not depend on $\Phi$ it can be taken out of the derivative, so the current keeps the form (\ref{jphi}). Moreover, $x$ carries no noise of its own: it is a differentiable function of time, $\dot{x}=v$, so the dependence of $g$ on $x$ produces no It\^o-Stratonovich correction to the drift.
+
+The factor $1/L(x)$ in the noise amplitude of (\ref{dI}) is only the result of the change of variables from $\Phi$ to $I=\Phi/L(x)$. The same change of variables produces the term $-L'vI/L$ in the drift, and the two together keep the equation for $I$ equivalent to the equation for $\Phi$. A simulation that integrates (\ref{dI}), with $g/L$ evaluated at the current position of the bar, samples the same Gibbs density, and conditional on $x$ it must give $\langle Mv^2\rangle=\langle L(x)I^2\rangle=kT$.
+
+{\bf What can prevent equilibrium:}
+\begin{itemize}
+\item {\it The position cannot be normalized.} Integrating (\ref{gibbs}) over $p$ and $\Phi$ leaves a marginal density in $x$ proportional to $\sqrt{L(x)}$. For the rails $L\propto x$, which grows without bound, so the density in $x$ cannot be normalized. In the dynamics this appears as a mean force on the bar,
+  \begin{align}
+    \left<\frac{1}{2}L'I^2\Big|x\right>&=\frac{1}{2}L'\frac{kT}{L}=kT\frac{d}{dx}\ln\sqrt{L(x)},
+  \end{align}
+  a thermal pressure that pushes the bar slowly towards larger $x$. The velocity and the current thermalize at every $x$, that is, they reach a local equilibrium, but $x$ does not settle. A global equilibrium requires confining the bar, e.g., with a wall or a potential.
+\item {\it Discretization.} The Euler-Maruyama scheme equilibrates to a slightly wrong temperature, with an error of order $dt$ relative to the fastest time scales, $L/R$ and $1/\omega$ in (\ref{oscillator}). For the rails $L/R$ is approximately independent of $x$, which helps, but as $x\to0$ we have $L(x)\to0$ and $g/L$ diverges, so a small $dt$ or a lower bound on $x$ is needed there.
+\item {\it Ergodicity.} The noise acts only on $\Phi$, and it reaches $p$ only through the coupling $lB_0$. For $B_0\neq0$ this is enough for the system to thermalize, but for $B_0=0$ the velocity of the bar never thermalizes.
+\end{itemize}
+
+{\bf Check in the simulation:} Bin the samples by $x$ and verify that $\langle Mv^2\rangle\simeq kT$ and $\langle L(x)I^2\rangle\simeq kT$ in each bin. A slow outward drift of the histogram of $x$ is the effect of the $\sqrt{L(x)}$ marginal density, not a failure of the noise amplitude $g/L(x)$.
 
 
 
