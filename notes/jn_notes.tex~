@@ -1,0 +1,648 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{amsthm}
+\usepackage{txfonts}
+
+\newtheorem{definition}{Definition}[section]
+
+\title{Jhonson's noise in the moving bar problem}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\section{The equations of motion}
+Let $x$ be the position of the sliding, conducting bar that closes a U-shaped circuit with respect to the left end of said circuit. Let $v=\dot{x}$ be the velocity of the conducting bar. Let $I$ be the electrical current that flows along the bar. Finally, let
+\begin{align}
+  \Gamma(t)&=\lim_{dt\rightarrow0}N(0,1/dt),
+\end{align}
+where $N(\mu,\sigma^2)$ is the normal distribution with mean $\mu$ and variance $\sigma^2$, be a Gaussian white noise process. By {\it Langevin's hypothesis} we assume that the resistance in an electric circuit, produced by the collisions of the charge carriers as the traverse the conductor atomic network under the efect of a force,  and the random thermal fluctuations of the charge carriers due to the vibration of the same network, are independent processes (though they are trully not). Also, following Gillespie \cite{gillespie}, we assume that when $x$ is fixed, the electric current $I(t)$ in the circuit is an Orstein-Uhlembeck (O-U) process, that is, it follows Langevin's equation with constant drift and diffusion coefficients. In this case,
+the equations of motion of the system are
+\begin{align}
+  \frac{dx}{dt}&=v(t),\\
+  \frac{dv}{dt}&=-\frac{lB_0}{M}I(t)+\frac{1}{2M}L'I(t)^2,\\
+  \frac{dI}{dt}&=\frac{lB_0}{L(x)}v(t)-\frac{1}{L(x)}\left(R(x)+\frac{dL}{dx}v(t)\right)I(t)+\frac{g}{L(x)}\Gamma(t),
+\end{align}
+where $M$ is the mass of the bar, $L(x)$ is the position-dependent self inductance of the circuit, $L'=dL/dx$, and $R(x)$ is the resistance of the circuit. $g$ is a factor to be determined in what follows.\\
+
+In absence of dissipation ($R=0$) and thermal noise $g=0$, the kinetic energy of the bar plus the energy stored in the induced magnetic field in the circuit is a conserved quantity
+\begin{align}
+  H&=\frac{p^2}{2M}+\frac{\Phi^2}{2L(x)},
+\end{align}
+where $p=Mv$ is the momentum of the bar and $\Phi=L(x)I(t)$ is the magnetic flux through the circuit. In terms of these momenta, and using the derivatives
+\begin{align}
+  \frac{\partial H}{\partial p}=\frac{p}{M}=v,\qquad\frac{\partial H}{\partial\Phi}=\frac{\Phi}{L}=I,\qquad\frac{\partial H}{\partial x}=-\frac{L'\Phi^2}{2L^2}=-\frac{L'I^2}{2},
+\end{align}
+the equations of motion take the form
+\begin{align}
+  \dot{x}&=\frac{\partial H}{\partial p},\nonumber\\
+  \dot{p}&=-\frac{\partial H}{\partial x}-lB_0\frac{\partial H}{\partial\Phi},\nonumber\\
+  \dot{\Phi}&=lB_0\frac{\partial H}{\partial p}-R\frac{\partial H}{\partial\Phi}+g\Gamma(t).
+  \label{eom}
+\end{align}
+
+\subsection{Fix the value of $g$}
+The {\it equipartition theorem} for the enregy tells us that, in equilibrium, the average energy contributed by each degree of freedom of a system is $k_BT/2$, where $k_B$ is the Boltzmann constant and $T$ is the absolute temperature of the reservoir in contact with system. Therefore, at equilibrium
+\begin{align}
+  \left<\frac{\Phi^{*2}}{2L^*}\right>&=\frac{1}{2}k_BT,
+\end{align}
+where the asterisk means the quantity is at thermal equilibrium, and the average is taken over the sample space of the random variable of interest, which in this case is $I(t)$. As $L^*$ is not a functon of $I$, we obtain
+\begin{align}
+  \left<\Phi^{*2}\right>&=k_BTL^*.
+  \label{ivar1}
+\end{align}
+On the other hand, when $x$ is fixed equation (\ref{eom}) becomes
+\begin{align}
+  \frac{d\Phi^*}{dt}&=-\frac{R^*}{L^*}\Phi^*+g\Gamma(t),
+\end{align}
+which is the Langevin equation of an O-U process with drift constant $R^*/L^*$ and diffusion constant $g$, and its variance satisfies (see Gillespie \cite{gillespie})
+\begin{align}
+  \left<\Phi^{*2}\right>&=\frac{g^2L^*}{2R^*}.
+  \label{ivar2}
+\end{align}
+By equating (\ref{ivar1}) and (\ref{ivar2}) we get
+\begin{align}
+  g&=\sqrt{2k_BTR^*}.
+\end{align}
+We see that $g$ does not depend on $L(x)$, and it is a function only of the temperature and resistance of the circuit.\\
+
+The form of $g$ can also be verified following a different route. 
+The equations of motion (\ref{eom}) have the form (\ref{langevin}) with a single white noise, $m=1$. The drift is
+\begin{align}
+  b&=(A-K)\nabla H,\qquad
+  A=\begin{pmatrix}0&1&0\\-1&0&-lB_0\\0&lB_0&0\end{pmatrix},\qquad
+  K=\begin{pmatrix}0&0&0\\0&0&0\\0&0&R\end{pmatrix},
+\end{align}
+where $A$ is a constant antisymmetric matrix that contains the conservative terms, and $K$ is a symmetric matrix that contains the dissipation. The noise enters only in $\Phi$ and with a constant amplitude, so
+\begin{align}
+  \sigma=\begin{pmatrix}0\\0\\g\end{pmatrix},\qquad
+  D=\sigma\sigma^T=\begin{pmatrix}0&0&0\\0&0&0\\0&0&g^2\end{pmatrix}.
+\end{align}
+The noise is additive, and there is no difference between the It\^o and Stratonovich interpretations. Since $D$ is constant, the probability current (\ref{current}) splits as
+\begin{align}
+  J&=J^c+J^d,\nonumber\\
+  J^c_i&=A_{ij}\partial_jH\,\rho,\nonumber\\
+  J^d_i&=-K_{ij}\partial_jH\,\rho-\frac{1}{2}D_{ij}\partial_j\rho,
+\end{align}
+the conservative part, and the dissipative plus noise part.
+
+{\bf Conservative part:} Let the density be any function of the energy, $\rho=F(H)$. Then
+\begin{align}
+  \partial_iJ^c_i&=A_{ij}\partial_i\partial_jH\,F(H)+A_{ij}\partial_iH\partial_jH\,F'(H)\nonumber\\
+  &=0,
+\end{align}
+since each term is the contraction of the antisymmetric $A_{ij}$ with a symmetric quantity. The conservative part of the dynamics moves the probability along the surfaces of constant energy, with a current $J^c$ that is not zero but has zero divergence, and leaves any function of $H$ stationary.
+
+{\bf Dissipative and noise part:} $K$ and $D$ have only a $\Phi\Phi$ component, so $J^d$ has only a $\Phi$ component
+\begin{align}
+  J_{\Phi}&=-R\frac{\Phi}{L}\rho-\frac{g^2}{2}\frac{\partial\rho}{\partial\Phi}.
+\end{align}
+The first term is the drift of the flux towards zero due to the resistance, and the second term is the diffusion of the flux due to the Johnson emf. For the Gibbs density
+\begin{align}
+  \rho&=\frac{1}{Z}e^{-H/kT},\qquad\frac{\partial\rho}{\partial\Phi}=-\frac{1}{kT}\frac{\partial H}{\partial\Phi}\rho=-\frac{\Phi}{LkT}\rho,
+\end{align}
+the two terms are proportional to each other
+\begin{align}
+  J_{\Phi}&=\frac{\Phi}{L}\rho\left(\frac{g^2}{2kT}-R\right).
+\end{align}
+Since the conservative part does not contribute, the Gibbs density is stationary if and only if $\partial J_{\Phi}/\partial\Phi=0$. From
+\begin{align}
+  \frac{\partial J_{\Phi}}{\partial\Phi}&=\frac{1}{L}\left(1-\frac{\Phi^2}{LkT}\right)\rho\left(\frac{g^2}{2kT}-R\right),
+\end{align}
+which is not identically zero unless the last factor vanishes, the Gibbs density is stationary if and only if
+\begin{align}
+  g^2&=2kTR,
+\end{align}
+in which case the current $J_{\Phi}$ itself vanishes for every $x$: the drift caused by the resistance and the diffusion caused by the noise balance each other at every point. This is the fluctuation-dissipation relation, written in general as $D=2kTK$. With this value of $g$,
+\begin{align}
+  \rho&\propto\exp\left(-\frac{p^2}{2MkT}-\frac{\Phi^2}{2L(x)kT}\right),
+\end{align}
+which is Gaussian in $p$ and, for each $x$, in $\Phi$, with $\langle p^2\rangle=MkT$ and $\langle\Phi^2|x\rangle=L(x)kT$, that is, $\langle Mv^2\rangle=\langle LI^2\rangle=kT$. Integrating over $p$ and $\Phi$ leaves a density in $x$ proportional to $\sqrt{L(x)}$, so the Gibbs density can be normalized only if $x$ is confined to a bounded range.
+
+{\bf Equation for the current:} It\^o's formula gives the equation for $I=\Phi/L(x)$ from (\ref{eom}). The only non-zero component of the diffusion matrix is $D_{\Phi\Phi}=g^2$ and $\partial^2I/\partial\Phi^2=0$, so the second order term in (\ref{ito}) vanishes and the ordinary chain rule applies
+\begin{align}
+  dI&=\frac{\partial I}{\partial x}dx+\frac{\partial I}{\partial\Phi}d\Phi\nonumber\\
+  &=-\frac{L'I}{L}v\,dt+\frac{1}{L}\left[(lB_0v-RI)dt+g\,dW\right]\nonumber\\
+  &=\left[\frac{lB_0v}{L}-\frac{1}{L}(R+L'v)I\right]dt+\frac{g}{L}dW,
+\end{align}
+which is the circuit equation with the noise amplitude $c(t)=g/L(x(t))=\sqrt{2kTR}/L(x(t))$.
+
+
+\subsection{Units}
+The following addimentional units will be used:
+\begin{itemize}
+\item The energy is addimentionalized by the magnetic energy of the external field
+  \begin{align}
+    E_0&=\frac{B_0^2d^3}{\mu_0},
+  \end{align}
+  where $d$ is the radius of the wire and $\mu_0$ the magnetic permeability of free space.
+\item Time is addimentionalized by the decay time of the induced current in the circuit when the position of the bar $x\rightarrow\infty$
+  \begin{align}
+    \tau&=\frac{\mu_0d^2}{\rho_{Cu}},
+  \end{align}
+  where $\rho_{Cu}$ is the resistivity of copper.
+\item The distance is addimentionalized by the wire radius $d$.
+\item The mass is addimentionalized by
+  \begin{align}
+    M_0&=\frac{E_0\tau^2}{d^2}.
+  \end{align}
+\end{itemize}
+
+
+
+
+
+%%----------------------------------------------------------------------
+\appendix
+
+\section{Brownian motion}
+The definitions and results of the appendices can be found in the book of Pavliotis \cite{pavliotis}.
+
+\begin{definition}
+  A one-dimensional standard {\it Brownian motion} $W(t):\mathbb{R}^+\rightarrow\mathbb{R}$ is a real-valued stochastic process with almost surely (a.s.) continuous paths such that $W(0)=0$, it has independent increments $\Delta W$, and for every $t>s\geq0$, the increment $\Delta W(t,s)=W(t)-W(s)$ has a Gaussian distribution with mean 0 and variance $t-s$
+  \begin{align}
+    g(x;t,s)&=\left(2\pi(t-s)\right)^{-\frac{1}{2}}e^{-\frac{x^2}{2(t-s)}}.
+  \end{align}
+\end{definition}
+
+
+\section{Filtration}
+{\bf $\sigma$-algebra:} A $\sigma$-algebra on a set $X$ is a non-empty collection $\Sigma$ of subsets of $X$ closed under {\it complement}, countable {\it unions}, and countable {\it intersections}. The pair $(X,\Sigma)$ is called a {\it measurable space}.
+
+Let the measure space be the probability space $(\Omega,\mathcal{F},\mathbb{P})$, where $\Omega$ is the {\it sample space}, i.e., the collection of the possible outcomes of the random variable. $\mathcal{F}$ is the {\it event space}, i.e., a $\sigma$-algebra formed by a collection of subsets of the sample space to which a probability measure can be applied. $\mathbb{P}$ is a map from $\mathcal{F}$ to $[0,1]$, that is, a probability measure. Additionally, let the {\it state space} be the measurable set of possible $d$-dimensional outcomes of an experiment $(\mathbb{R}^d,\mathcal{B})$, where the Borel $\sigma$-algebra $\mathcal{B}$ is there to give the mathematical structure that makes the state space measurable, i.e., probabilities can be asigned to states. A state can correspond to one or even a subset of elements of the sample space.
+
+Let $X_t$ be a stochastic process. Define $\sigma(X_t,t\in \mathbb{R}_+)$ as the smallest $\sigma$-algebra generated by the family of mappings $\{X_t;\mathbb{R}_+\}$ (a random variable for each $t$) such that this family is a stochastic process with sample space $\Omega$ and state space $(\mathbb{R}^d,\mathcal{B})$. That is, each $X_t$ is a measurable function (random variable) with respect to the $\sigma$-algebra generated by the process.
+
+Define a {\it filtration} on $(\Omega,\mathcal{F})$ as a non-decreasing family $\{\mathcal{F}_t;t\in\mathbb{R}_+\}$ of sub-$\sigma$-algebras of $\mathcal{F}$
+$$\mathcal{F}_s\subseteq\mathcal{F}_t\subseteq\mathcal{F},\ \text{ for }s\leq t.$$
+{\bf Example:} Let $\Omega=\{HH,HT,TH,TT\}$ be the space of outcomes of two coin flips. Let $\mathcal{F}$ be the power set of $\Omega$, which is the largest $\sigma$-algebra on $\Omega$
+\begin{align}
+  \Omega^*=&\underbrace{\{\emptyset,\{HH\},\{HT\},\dots,\{HH,HT\},\dots,\{HH,HT,TH,TT\}\}}\nonumber\\
+  &\hspace{4cm}2^4=16\text{ subsets}\nonumber
+\end{align}
+Let the coins be flipped one at a time, the first at $t=1$ and the second at $t=2$. Before any flip nothing is known about the outcome, so the only events whose occurrence can be decided are the trivial ones
+$$\mathcal{F}_0=\{\emptyset,\Omega\}.$$
+After the first flip we know whether the first coin landed heads or tails, but nothing about the second. The outcomes $HH$ and $HT$ cannot yet be told apart, and neither can $TH$ and $TT$, so
+$$\mathcal{F}_1=\{\emptyset,\{HH,HT\},\{TH,TT\},\Omega\}.$$
+This is a $\sigma$-algebra: $\{HH,HT\}^c=\{TH,TT\}$, and the unions and intersections of its elements are again elements of $\mathcal{F}_1$. After the second flip the outcome is completely known, every subset of $\Omega$ can be decided, and
+$$\mathcal{F}_2=\Omega^*=\mathcal{F}.$$
+Therefore
+$$\mathcal{F}_0\subseteq\mathcal{F}_1\subseteq\mathcal{F}_2=\mathcal{F},$$
+and $\{\mathcal{F}_0,\mathcal{F}_1,\mathcal{F}_2\}$ is a filtration on $(\Omega,\mathcal{F})$. To index it by $t\in\mathbb{R}_+$ as in the definition, set $\mathcal{F}_t=\mathcal{F}_0$ for $0\leq t<1$, $\mathcal{F}_t=\mathcal{F}_1$ for $1\leq t<2$, and $\mathcal{F}_t=\mathcal{F}_2$ for $t\geq 2$.
+
+The filtration encodes the information available at each time: $\mathcal{F}_t$ contains exactly the events for which, at time $t$, one can say whether they happened or not. For instance, the event ``the first flip is heads'', $\{HH,HT\}$, belongs to $\mathcal{F}_1$, while the event ``both flips give the same result'', $\{HH,TT\}$, belongs to $\mathcal{F}_2$ but not to $\mathcal{F}_1$, since it cannot be decided until the second coin is flipped.
+
+This is the filtration generated by the process itself. Let $X_t$ be the result of the $t$-th flip, with $X_t=1$ for heads and $X_t=0$ for tails. Then $X_1^{-1}(\{1\})=\{HH,HT\}$ and $X_1^{-1}(\{0\})=\{TH,TT\}$, so that $\mathcal{F}_1=\sigma(X_1)$, and similarly $\mathcal{F}_2=\sigma(X_1,X_2)$. In general $\mathcal{F}_t=\sigma(X_s,s\leq t)$ is the smallest $\sigma$-algebra for which all the $X_s$ with $s\leq t$ are measurable. Note that $X_2$ is not measurable with respect to $\mathcal{F}_1$, since $X_2^{-1}(\{1\})=\{HH,TH\}\notin\mathcal{F}_1$: the second flip is not known at $t=1$.
+
+
+\section{Expected values}
+Every expected value in these notes is, by definition, an integral over the sample space $\Omega$ with respect to the probability measure $\mathbb{P}$. A random variable is a measurable function $X_t:\Omega\rightarrow\mathbb{R}^d$, and for a function $f$ of the state
+\begin{align}
+  \mathbb{E}[f(X_t)]&=\int_{\Omega}f(X_t(\omega))d\mathbb{P}(\omega).
+  \label{expomega}
+\end{align}
+Each $\omega$ is one complete realization of the experiment, e.g., one whole history of the noise, so (\ref{expomega}) is an average over the ensemble of realizations at a fixed time $t$.
+
+In practice the expected value is computed as an integral over the state space. The random variable $X_t$ carries $\mathbb{P}$ over to a probability measure on the state space $(\mathbb{R}^d,\mathcal{B})$, the {\it distribution} of $X_t$,
+\begin{align}
+  \mathbb{P}_{X_t}(\Gamma)&=\mathbb{P}(X_t\in\Gamma)=\mathbb{P}(\{\omega|X_t(\omega)\in\Gamma\}),\qquad\Gamma\in\mathcal{B},
+\end{align}
+and a change of variables gives
+\begin{align}
+  \mathbb{E}[f(X_t)]&=\int_{\mathbb{R}^d}f(x)\mathbb{P}_{X_t}(dx)\nonumber\\
+  &=\int_{\mathbb{R}^d}f(x)\rho_t(x)dx,
+  \label{expstate}
+\end{align}
+where the last equality holds when the distribution has a density $\rho_t$ with respect to the Lebesgue measure. The density contains all that is needed to compute expected values at time $t$, and $\Omega$ never has to be known explicitly.
+
+Some remarks on the notation:
+\begin{itemize}
+\item The angle brackets $\langle\cdot\rangle$ used in physics are the same expected value, $\langle f(X_t)\rangle=\mathbb{E}[f(X_t)]$. For example, $\langle Mv^2\rangle$ in the stationary state is (\ref{expstate}) with $\rho_t$ the stationary density.
+\item The pairing $\langle f,\rho\rangle=\int f(x)\rho(x)dx$ used for the adjoint semigroup is not by itself an expected value. It is an integral over the state space, and it is equal to $\mathbb{E}[f(X_t)]$ only when $\rho$ is the density of $X_t$.
+\item A conditional expected value is not a number. $\mathbb{E}[f(X_t)|\mathcal{F}_s]$ is a random variable, i.e., a function of $\omega$, measurable with respect to $\mathcal{F}_s$, that averages only over what is not yet known at time $s$. $\mathbb{E}[f(X_t)|X_s=x]$ is the corresponding function of the state $x$.
+\item None of these are time averages along a single trajectory $t\mapsto X_t(\omega)$. A time average is equal to the ensemble average only for an ergodic process in its stationary state, which is an additional property and not part of the definition.
+\end{itemize}
+
+
+\section{Markov process}
+Let $\{X_t,t\in\mathbb{R}_+\}$ be a stochastic process, i.e., a family of random variables indexed by $t\in\mathbb{R}_+$, and let $\mathcal{F}_t=\sigma(X_s,s\leq t)$ be the filtration generated by it.
+
+Set $\mathcal{F}_{\infty}=\sigma(\cup_{t\in\mathbb{R}_+}\mathcal{F}_t)$. $\mathcal{F}_{\infty}$ is the smallest $\sigma$-algebra containing every $\mathcal{F}_t$, i.e., all the information that the filtration ever reveals. It should not be confused with $\mathcal{F}$, the $\sigma$-algebra of all the events on which $\mathbb{P}$ is defined. $\mathcal{F}$ is fixed beforehand as part of the probability space and the filtration only has to live inside it, so in general
+$$\mathcal{F}_t\subseteq\mathcal{F}_{\infty}\subseteq\mathcal{F},\ \text{ for all }t,$$
+and the last inclusion can be strict: if $\mathcal{F}$ contains randomness that the process never observes, those events are in $\mathcal{F}$ but not in $\mathcal{F}_{\infty}$. For example, take three coin flips with $\mathcal{F}$ the power set of the eight outcomes, and a process that only records the first two flips. The event ``the third flip is heads'' is in $\mathcal{F}$ but not in $\mathcal{F}_{\infty}$. In the two-coin example of the appendix, on the other hand, $\mathcal{F}_{\infty}=\mathcal{F}_2=\mathcal{F}$. Since the events outside $\mathcal{F}_{\infty}$ are irrelevant to the process, it is common to simply assume $\mathcal{F}=\mathcal{F}_{\infty}$.
+
+The $\sigma(\cdot)$ in the definition is needed because the union of the $\mathcal{F}_t$ is in general not a $\sigma$-algebra. For a non-decreasing family the union is closed under complements and finite unions, but not under countable unions. For example, take an infinite sequence of coin flips with $\mathcal{F}_n=\sigma(X_1,\dots,X_n)$. The union $\cup_n\mathcal{F}_n$ contains only the events that are decided by a finite number of flips. The event ``heads occurs infinitely often'' depends on the whole sequence, so it is not in $\cup_n\mathcal{F}_n$, but it is in $\mathcal{F}_{\infty}$, since it can be written as
+$$\bigcap_{n\geq 1}\bigcup_{m\geq n}\{X_m=1\},$$
+a countable intersection of countable unions of events of the $\mathcal{F}_m$.
+
+\begin{definition}
+Let $X_t$ be a stochastic process defined on a probability space $(\Omega,\mathcal{F},\mathbb{P})$ with values in $\mathbb{R}^d$, and let $\mathcal{F}^X_t$ be the filtration generated by $\{X_t;t\in\mathbb{R}_+\}$. Then $\{X_t;t\in\mathbb{R}_+\}$ is a {\bf Markov process} if
+\begin{align}
+  \mathbb{P}(X_t\in\Gamma|\mathcal{F}^X_s)=\mathbb{P}(X_t\in\Gamma|X_s)
+\end{align}
+for all $t,s\in\mathbb{R}_+$ with $t\geq s$, and $\Gamma\in\mathcal{B}(\mathbb{R}^d)$. $\mathcal{F}^X_t$ is generated by events of the form $\{\omega |X_{t_1}\in\Gamma_1,X_{t_2}\in\Gamma_2,\dots,X_{t_n}\in\Gamma_n\}$, with $0\leq t_1<t_2<\dots<t_n\leq t$ and $\Gamma_i\in\mathcal{B}(\mathbb{R}^d)$. The definition of a Markov process is equivalent to the hierarchy of equations
+\begin{align}
+  \mathbb{P}(X_t\in\Gamma|X_{t_1},X_{t_2},\dots,X_{t_n})=\mathbb{P}(X_t\in\Gamma|X_{t_n}),\nonumber
+\end{align}
+for $n\geq 1$ and $0\leq t_1<t_2<\dots<t_n\leq t$ with $\Gamma\in\mathcal{B}(\mathbb{R}^d)$.
+\end{definition}
+
+
+\section{Chapman-Kolmogorov equation}
+\subsection{Discrete states}
+Consider first a Markov process in continuous time whose state space is a finite set $\{1,2,\dots,N\}$ instead of $\mathbb{R}^d$. The transition function is then the $N\times N$ {\it transition matrix} $P(s,t)$ with elements
+\begin{align}
+  P_{ij}(s,t)&=\mathbb{P}(X_t=j|X_s=i),\qquad t\geq s,
+\end{align}
+the probability of being in the state $j$ at time $t$ given that the process was in the state $i$ at time $s$. Its elements are non-negative and each of its rows adds up to one, $\sum_jP_{ij}(s,t)=1$, since the process has to be in some state at time $t$.
+
+Let $s\leq u\leq t$. To go from $i$ at time $s$ to $j$ at time $t$ the process has to pass through some state $k$ at the intermediate time $u$. Adding the probabilities of these mutually exclusive alternatives, and using the Markov property to drop the condition on $X_s$ once $X_u$ is known,
+\begin{align}
+  \mathbb{P}(X_t=j|X_s=i)&=\sum_k\mathbb{P}(X_t=j|X_u=k,X_s=i)\mathbb{P}(X_u=k|X_s=i)\nonumber\\
+  &=\sum_k\mathbb{P}(X_t=j|X_u=k)\mathbb{P}(X_u=k|X_s=i),
+\end{align}
+that is,
+\begin{align}
+  P_{ij}(s,t)&=\sum_kP_{ik}(s,u)P_{kj}(u,t).
+\end{align}
+This is the Chapman-Kolmogorov equation, and it is just a matrix product
+\begin{align}
+  P(s,t)&=P(s,u)P(u,t).
+\end{align}
+In the same way, if $\pi_i$ is the probability of the initial state $i$, the probability of a whole path is
+\begin{align}
+  \mathbb{P}(X_{t_0}=i_0,X_{t_1}=i_1,\dots,X_{t_n}=i_n)&=\pi_{i_0}\prod_{j=1}^nP_{i_{j-1}i_j}(t_{j-1},t_j).
+\end{align}
+The continuous case below has the same structure. The matrix element $P_{ij}(s,t)$ becomes the transition probability density $p(y,t|x,s)$, with $x$ in the place of the initial state $i$ and $y$ in the place of the final state $j$, and the sum over the intermediate state $k$ becomes an integral over the intermediate point $z$. The matrix product becomes a composition of integral kernels, which is a convolution when the density depends only on the difference $y-x$, as it does for Brownian motion.
+
+\subsection{Continuous states}
+With every continuous time Markov process $X_t$ defined in a probability space $(\Omega,\mathcal{F},\mathbb{P})$ and a state space $(\mathbb{R}^d,\mathcal{B})$, we can associate the {\it transition function} \cite{pavliotis}
+\begin{align}
+  P(\Gamma,t|X_s,s):=\mathbb{P}[X_t\in\Gamma|\mathcal{F}^X_s]
+\end{align}
+for all $t,s\in\mathbb{R}_+$, with $t\geq s$ and $\Gamma\in\mathcal{B}(\mathbb{R}^d)$. The transition function satisfies the {\it Chapman-Kolmogorov} equation
+\begin{align}
+  P(\Gamma,t|x,s)&=\int_{\mathbb{R}^d}P(\Gamma,t|y,u)P(dy,u|x,s),
+  \label{ckint}
+\end{align}
+where $s\leq u\leq t$. Here $\int P(dy,u|x,s)$ is an integral against the transition probability measure itself. If this measure has a density $p(y,u|x,s)$ with respect to the Lebesgue measure, then $P(dy,u|x,s)=p(y,u|x,s)dy$ and the integral becomes an integral of the density with respect to the Lebesgue measure, $\int p(y,u|x,s)dy$. Such a density does not always exist. In what follows we consider Markov processes whose transition function has a density with respect to the Lebesgue measure:
+\begin{align}
+  P(\Gamma,t|x,s)&=\int_{\Gamma}p(y,t|x,s)dy,
+  \label{ckint2}
+\end{align}
+and refer to $p(y,t|x,s)$ as the {\it transition probability density}. From (\ref{ckint}) and (\ref{ckint2}) we obtain
+\begin{align}
+  \int_{\Gamma}p(y,t|x,s)dy&=\int_{\mathbb{R}^d}\int_{\Gamma}p(y,t|z,u)p(z,u|x,s)dydz.
+\end{align}
+Since $\Gamma$ is arbitrary, the transition probability density itself satisfies the Chapman-Kolmogorov equation
+\begin{align}
+  p(y,t|x,s)&=\int_{\mathbb{R}^d}p(y,t|z,u)p(z,u|x,s)dz,
+\end{align}
+for almost every $y$.
+
+Assuming that the initial distribution has a density $\rho$, we can write
+\begin{align}
+  p(x_0,t_0,\dots,x_n,t_n)&=\rho(x_0)\prod_{j=1}^np(x_j,t_j|x_{j-1},t_{j-1}).
+\end{align}
+
+
+\section{Forward and backwards Kolmogorov equations}
+\subsection{Discrete states}
+Let the state space be the finite set $\{1,2,\dots,N\}$ and let the process be time-homogeneous, so that the transition matrix depends only on the elapsed time. Write $P_t$ for the matrix with elements
+\begin{align}
+  (P_t)_{ij}&=\mathbb{P}(X_{s+t}=j|X_s=i).
+\end{align}
+The Chapman-Kolmogorov equation becomes
+\begin{align}
+  P_{t+h}=P_tP_h,\qquad P_0=I,
+\end{align}
+where the product is a matrix product and $I$ is the identity matrix. Then
+\begin{align}
+  \frac{dP_t}{dt}&=\lim_{h\rightarrow 0^+}\frac{P_tP_h-P_t}{h}=P_tG,\qquad G=\lim_{h\rightarrow 0^+}\frac{P_h-I}{h},
+\end{align}
+and, since $P_{t+h}=P_hP_t$ as well, also $dP_t/dt=GP_t$. The {\it generator} $G$ is now an $N\times N$ matrix. For a short time $h$
+\begin{align}
+  (P_h)_{ij}&=\delta_{ij}+G_{ij}h+o(h),
+\end{align}
+so for $i\neq j$ the element $G_{ij}\geq 0$ is the {\it transition rate} from $i$ to $j$, the probability per unit time of jumping from $i$ to $j$. Since each row of $P_h$ adds up to one, each row of $G$ adds up to zero
+\begin{align}
+  G_{ii}&=-\sum_{j\neq i}G_{ij},
+\end{align}
+which is minus the total rate of leaving the state $i$. The solution is the matrix exponential
+\begin{align}
+  P_t&=e^{tG}=\sum_{n=0}^{\infty}\frac{t^n}{n!}G^n.
+\end{align}
+
+The matrix $P_t$ can act on two different objects. A function of the state is a column vector $f=(f_1,\dots,f_N)^T$, and $P_t$ acts on it from the left
+\begin{align}
+  u_i(t)&=(P_tf)_i=\sum_j(P_t)_{ij}f_j=\mathbb{E}[f(X_t)|X_0=i].
+\end{align}
+From $dP_t/dt=GP_t$ we obtain the {\it backward Kolmogorov equation}
+\begin{align}
+  \frac{du}{dt}&=Gu,\qquad u(0)=f.
+\end{align}
+The probabilities of the states form a row vector $\pi(t)=(\pi_1(t),\dots,\pi_N(t))$, with $\pi_j(t)=\mathbb{P}(X_t=j)$, and $P_t$ acts on it from the right
+\begin{align}
+  \pi_j(t)&=\sum_i\pi_i(0)(P_t)_{ij},\qquad\pi(t)=\pi(0)P_t.
+\end{align}
+From $dP_t/dt=P_tG$ we obtain the {\it forward Kolmogorov equation}
+\begin{align}
+  \frac{d\pi}{dt}&=\pi G,\qquad\text{or}\qquad\frac{d\pi^T}{dt}=G^T\pi^T.
+\end{align}
+Acting from the right on a row vector is the same as acting with the transpose on a column vector, so the probabilities evolve with $P_t^T$ and $G^T$: for matrices the adjoint is the transpose. Using that the rows of $G$ add up to zero, the forward equation reads in components
+\begin{align}
+  \frac{d\pi_j}{dt}&=\sum_{i\neq j}\left(\pi_iG_{ij}-\pi_jG_{ji}\right),
+\end{align}
+which is called the {\it master equation}: the probability of the state $j$ increases by the jumps into $j$ and decreases by the jumps out of $j$. Both equations are contained in the expected value
+\begin{align}
+  \mathbb{E}[f(X_t)]&=\sum_{i,j}\pi_i(0)(P_t)_{ij}f_j=\pi(0)P_tf,
+\end{align}
+where one can either evolve $f$ and average over the initial probabilities, or evolve the probabilities and average $f$ over them.
+
+{\bf Example:} For two states with transition rates $\alpha$ from 1 to 2 and $\beta$ from 2 to 1,
+\begin{align}
+  G&=\begin{pmatrix}-\alpha&\alpha\\\beta&-\beta\end{pmatrix},\qquad
+  P_t=\Pi+e^{-(\alpha+\beta)t}(I-\Pi),\qquad
+  \Pi=\frac{1}{\alpha+\beta}\begin{pmatrix}\beta&\alpha\\\beta&\alpha\end{pmatrix}.
+\end{align}
+For $t\rightarrow\infty$ every row of $P_t$ tends to the stationary probabilities $\pi=(\beta,\alpha)/(\alpha+\beta)$, which satisfy $\pi G=0$, whatever the initial state.
+
+The continuous case below has the same structure. The column vector $f$ becomes a function $f(x)$, the row vector $\pi$ becomes a probability density $\rho(x)$, the sums become integrals, and the matrix product becomes a composition of operators. The matrix $G$ becomes a differential operator, its transpose becomes the adjoint $G^*$, and the master equation becomes the Fokker-Planck equation.
+
+\subsection{Continuous states}
+Let the process be {\it time-homogeneous}, i.e., let the transition function depend only on the elapsed time
+\begin{align}
+  P(\Gamma,t|x,s)=P(\Gamma,t-s|x,0).
+\end{align}
+Introduce the notation
+\begin{align}
+  P_h(x,\Gamma)&=\mathbb{P}(X_{t+h}\in\Gamma|X_t=x)\nonumber\\
+  &=\int_{\Gamma}p(y,t+h|x,t)dy,
+\end{align}
+which does not depend on $t$, and where the last equality holds when a density exists. Let $P_t$ also denote the operator that acts on a bounded measurable function $f$ as
+\begin{align}
+  (P_tf)(x)&=\int_{\mathbb{R}^d}f(y)P_t(x,dy)\nonumber\\
+  &=\mathbb{E}[f(X_t)|X_0=x].
+\end{align}
+In this notation the Chapman-Kolmogorov equation with $s=0$, $u=t$, and final time $t+h$ reads
+\begin{align}
+  P_{t+h}(x,\Gamma)&=\int_{\mathbb{R}^d}P_h(y,\Gamma)P_t(x,dy),
+\end{align}
+that is, the operators form a semigroup
+\begin{align}
+  P_{t+h}=P_t\circ P_h,\qquad P_0=I.
+\end{align}
+The differential form of the Chapman-Kolmogorov equation is
+\begin{align}
+  \frac{dP_t}{dt}&=\lim_{h\rightarrow 0^+}\frac{P_{t+h}-P_t}{h}\nonumber\\
+  &=\lim_{h\rightarrow 0^+}\frac{P_t\circ P_h-P_t\circ I}{h}\nonumber\\
+  &=P_t\circ\left(\lim_{h\rightarrow 0^+}\frac{P_h-I}{h}\right)\nonumber\\
+  &=P_t\circ G,
+\end{align}
+where
+\begin{align}
+  G&=\lim_{h\rightarrow 0^+}\frac{P_h-I}{h}
+\end{align}
+is called the {\it generator} of the Markov process. The limit is understood as acting on the functions $f$ for which it exists, which form the domain of $G$. For a finite state space $G$ is a matrix and the limit exists for every $f$, but on $\mathbb{R}^d$ the generator is in general an unbounded differential operator, e.g., $G=\frac{1}{2}\Delta$ for Brownian motion. The definition of $G$ allows us to write formally the $P_t$ operator as
+\begin{align}
+  P_t&=e^{tG}.
+\end{align}
+
+Since $t+h=h+t$, the semigroup property also gives $P_{t+h}=P_h\circ P_t$, so $P_t$ and $P_h$ always commute for a time-homogeneous process, and the same argument gives
+\begin{align}
+  \frac{dP_t}{dt}&=G\circ P_t.
+\end{align}
+Both forms hold at once, $\frac{d}{dt}P_tf=P_tGf=GP_tf$ for $f$ in the domain of $G$. They differ in where the small time step $h$ is taken: at the end of the time interval in $P_t\circ P_h$, and at the beginning in $P_h\circ P_t$. Each of them leads to a different evolution equation.
+
+{\bf Backward equation:} Let
+\begin{align}
+  u(x,t)&=(P_tf)(x)=\mathbb{E}[f(X_t)|X_0=x].
+\end{align}
+Applying $dP_t/dt=G\circ P_t$ to $f$ gives the {\it backward Kolmogorov equation}
+\begin{align}
+  \frac{\partial u}{\partial t}&=\frac{\partial}{\partial t}\left(P_tf\right)\nonumber\\
+  &=\frac{\partial}{\partial t}\left(e^{tG}f\right)\nonumber\\
+  &=G\left(e^{tG}f\right)\nonumber\\
+  &=G\left(P_tf\right)\nonumber\\
+  &=Gu,\qquad u(x,0)=f(x),
+\end{align}
+where $G$ acts on the initial point $x$ of the process.
+
+{\bf Forward equation:} The semigroup $P_t$ evolves functions of the state. The evolution of the probability density of the state is given instead by the {\it adjoint semigroup}. Define the pairing
+\begin{align}
+  \langle f,\rho\rangle&=\int_{\mathbb{R}^d}f(x)\rho(x)dx,
+\end{align}
+and the adjoint $P_t^*$ of $P_t$ by $\langle P_tf,\rho\rangle=\langle f,P_t^*\rho\rangle$ for all $f$ and $\rho$. If $X_0$ has the density $\rho_0$, then
+\begin{align}
+  \mathbb{E}[f(X_t)]&=\int_{\mathbb{R}^d}\mathbb{E}[f(X_t)|X_0=x]\rho_0(x)dx\nonumber\\
+  &=\langle P_tf,\rho_0\rangle\nonumber\\
+  &=\langle f,P_t^*\rho_0\rangle,
+\end{align}
+so that
+\begin{align}
+  \rho_t&=P_t^*\rho_0
+\end{align}
+is the density of $X_t$. In terms of the transition probability density
+\begin{align}
+  (P_tf)(x)&=\int_{\mathbb{R}^d}p(y,t|x,0)f(y)dy,\nonumber\\
+  (P_t^*\rho)(y)&=\int_{\mathbb{R}^d}p(y,t|x,0)\rho(x)dx,
+\end{align}
+that is, $P_t$ integrates over the final point and $P_t^*$ over the initial point. Taking the adjoint reverses the order of a composition, $(P_t\circ P_h)^*=P_h^*\circ P_t^*$, so the $P_t^*$ also form a semigroup, and its generator is the adjoint $G^*$ of $G$, defined by $\langle Gf,\rho\rangle=\langle f,G^*\rho\rangle$. Using $dP_t/dt=P_t\circ G$,
+\begin{align}
+  \frac{d}{dt}\langle f,\rho_t\rangle&=\frac{d}{dt}\langle P_tf,\rho_0\rangle\nonumber\\
+  &=\langle P_tGf,\rho_0\rangle\nonumber\\
+  &=\langle Gf,\rho_t\rangle\nonumber\\
+  &=\langle f,G^*\rho_t\rangle.
+\end{align}
+Since this holds for every $f$ in the domain of $G$, we obtain the {\it forward Kolmogorov equation}, or {\it Fokker-Planck equation},
+\begin{align}
+  \frac{\partial\rho_t}{\partial t}&=G^*\rho_t,\qquad \rho_{t=0}=\rho_0.
+\end{align}
+Since $f$ and $\rho_0$ are arbitrary, the transition probability density satisfies both equations
+\begin{align}
+  \frac{\partial}{\partial t}p(y,t|x,0)&=G_xp(y,t|x,0)\nonumber\\
+  &=G^*_yp(y,t|x,0),
+\end{align}
+where the subscript indicates the variable on which the operator acts: the backward equation is an equation in the initial point $x$, and the forward equation is an equation in the final point $y$. The two operators are different in general. For example, for
+\begin{align}
+  Gf&=b(x)\cdot\nabla f+\frac{1}{2}\Delta f,\nonumber\\
+  G^*\rho&=-\nabla\cdot(b(x)\rho)+\frac{1}{2}\Delta\rho,
+\end{align}
+and they coincide only if $G$ is self-adjoint, as for Brownian motion, $b=0$.
+
+{\bf Remark:} If the process is not time-homogeneous, the transition operators depend on two times, $(P_{s,t}f)(x)=\mathbb{E}[f(X_t)|X_s=x]$, the Chapman-Kolmogorov equation reads $P_{s,t}=P_{s,u}\circ P_{u,t}$ for $s\leq u\leq t$, and the generator $G_t$ depends on time. The operators at different times do not commute in general, and the two differential forms are no longer the same identity,
+\begin{align}
+  \frac{\partial}{\partial t}P_{s,t}&=P_{s,t}\circ G_t,\nonumber\\
+  -\frac{\partial}{\partial s}P_{s,t}&=G_s\circ P_{s,t}.
+\end{align}
+The first one is an equation in the final time $t$ and, through the adjoint, gives the forward equation $\partial\rho_t/\partial t=G_t^*\rho_t$. The second one is an equation in the initial time $s$ and gives the backward equation for $u(x,s)=(P_{s,t}f)(x)$, $-\partial u/\partial s=G_su$, with the final condition $u(x,t)=f(x)$.
+
+
+\section{Fokker-Planck equation}
+This section writes the generator $G$ and its adjoint $G^*$ explicitly for a process defined by a stochastic differential equation, which turns the forward Kolmogorov equation into a partial differential equation for the probability density, the Fokker-Planck equation. It is then applied to the sliding-bar circuit, to obtain the conservative and the dissipative plus noise parts of the probability current used in Sec.~4 of {\tt noise\_derivation.pdf}, starting from the Hamiltonian and the equations of motion. Repeated indices are summed, and $\partial_i=\partial/\partial x_i$.
+
+\subsection{Stochastic differential equations and It\^o's formula}
+The mathematical theory of stochastic differential equations and of the Fokker-Planck equation is given in \cite{pavliotis}, and a presentation in terms of the Langevin equation and the white noise $\Gamma(t)$, with the application to Johnson noise, in \cite{gillespie}. Let the state $X_t\in\mathbb{R}^d$ obey the Langevin equation
+\begin{align}
+  \frac{dX_i}{dt}&=b_i(X)+\sigma_{ik}(X)\Gamma_k(t),
+  \label{langevin}
+\end{align}
+where $b_i$ is the {\it drift}, $\sigma_{ik}$ is a $d\times m$ matrix, and the $\Gamma_k(t)$ are $m$ independent Gaussian white noises
+\begin{align}
+  \langle\Gamma_k(t)\rangle=0,\qquad\langle\Gamma_k(t)\Gamma_l(t')\rangle=\delta_{kl}\delta(t-t').
+\end{align}
+$\Gamma_k(t)$ is not an ordinary function of time. Its integral, however, is the Brownian motion $W_k(t)=\int_0^t\Gamma_k(s)ds$, so that $\Gamma_k(t)dt=dW_k(t)$, and (\ref{langevin}) is given a meaning as the {\it stochastic differential equation}
+\begin{align}
+  dX_i&=b_i(X)dt+\sigma_{ik}(X)dW_k.
+  \label{sde}
+\end{align}
+In the {\it It\^o} interpretation $\sigma_{ik}$ is evaluated at the beginning of the time step. The increment $dW_k(t)=W_k(t+dt)-W_k(t)$ is independent of $\mathcal{F}_t$, while $\sigma_{ik}(X_t)$ is $\mathcal{F}_t$-measurable, and therefore
+\begin{align}
+  \mathbb{E}[\sigma_{ik}(X_t)dW_k(t)|\mathcal{F}_t]&=\sigma_{ik}(X_t)\mathbb{E}[dW_k(t)]=0.
+  \label{itomean}
+\end{align}
+The increments of the Brownian motion have variance $\mathbb{E}[dW_kdW_l]=\delta_{kl}dt$, so $dW$ is of order $\sqrt{dt}$, and the terms of second order in $dW$ contribute to first order in $dt$. In the limit $dt\rightarrow 0$ the terms of higher order than $dt$ are negligible, which is summarized in the rules
+\begin{align}
+  dW_kdW_l=\delta_{kl}dt,\qquad dW_kdt=0,\qquad dt^2=0.
+\end{align}
+Let $f(x)$ be a smooth function. Expanding $f(X_t)$ to second order in $dX$ and using (\ref{sde}) and the rules above gives {\it It\^o's formula}
+\begin{align}
+  df&=\partial_if\,dX_i+\frac{1}{2}\partial_i\partial_jf\,dX_idX_j\nonumber\\
+  &=\left(b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf\right)dt+\sigma_{ik}\partial_if\,dW_k,
+  \label{ito}
+\end{align}
+where
+\begin{align}
+  D_{ij}&=\sigma_{ik}\sigma_{jk}
+\end{align}
+is the {\it diffusion matrix}. The term with $D_{ij}$ is the difference with the ordinary chain rule.
+
+In the {\it Stratonovich} interpretation $\sigma_{ik}$ is evaluated at the midpoint of the time step instead. The two interpretations differ by a drift term that contains the derivatives of $\sigma_{ik}$, so they are the same equation when $\sigma_{ik}$ does not depend on the state, which is called {\it additive noise}.
+
+\subsection{Generator and probability current}
+Taking the expectation of (\ref{ito}) conditional on $X_t=x$, the last term vanishes because of (\ref{itomean}). The expectation is an integral over the final state $y$ with the transition probability density, in which $f(y)$ is expanded around $x$,
+\begin{align}
+  \mathbb{E}[f(X_{t+h})|X_t=x]&=\int_{\mathbb{R}^d}f(y)p(y,t+h|x,t)dy\nonumber\\
+  &=f(x)+\partial_if(x)\int_{\mathbb{R}^d}(y_i-x_i)p(y,t+h|x,t)dy\nonumber\\
+  &\quad+\frac{1}{2}\partial_i\partial_jf(x)\int_{\mathbb{R}^d}(y_i-x_i)(y_j-x_j)p(y,t+h|x,t)dy+\dots\nonumber\\
+  &=f(x)+h\left(b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf\right)(x)+o(h),
+\end{align}
+where the two integrals are the first and second moments of the increment $X_{t+h}-x$, equal to $b_i(x)h+o(h)$ and $D_{ij}(x)h+o(h)$ according to (\ref{sde}) and the rules above.
+The left hand side is $(P_hf)(x)$, so the generator $G=\lim_{h\rightarrow 0^+}(P_h-I)/h$ of the process (\ref{sde}) is
+\begin{align}
+  Gf&=b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf.
+\end{align}
+Its adjoint is obtained by integrating by parts, for a density $\rho$ that vanishes at infinity,
+\begin{align}
+  \langle Gf,\rho\rangle&=\int_{\mathbb{R}^d}\left(b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf\right)\rho\,dx\nonumber\\
+  &=\int_{\mathbb{R}^d}f\left(-\partial_i(b_i\rho)+\frac{1}{2}\partial_i\partial_j(D_{ij}\rho)\right)dx\nonumber\\
+  &=\langle f,G^*\rho\rangle.
+\end{align}
+The forward Kolmogorov equation $\partial\rho/\partial t=G^*\rho$ becomes the {\it Fokker-Planck equation}
+\begin{align}
+  \frac{\partial\rho}{\partial t}&=-\partial_i(b_i\rho)+\frac{1}{2}\partial_i\partial_j(D_{ij}\rho).
+  \label{fp}
+\end{align}
+It has the form of a continuity equation
+\begin{align}
+  \frac{\partial\rho}{\partial t}+\partial_iJ_i&=0,\qquad J_i=b_i\rho-\frac{1}{2}\partial_j(D_{ij}\rho),
+  \label{current}
+\end{align}
+where $J$ is the {\it probability current}: probability is conserved, and it changes in a region only by flowing through its boundary. The first term of $J_i$ is the transport of probability by the drift, and the second term is the diffusion caused by the noise. A density is {\it stationary} if
+\begin{align}
+  \partial_iJ_i&=0.
+\end{align}
+Note that this does not require $J=0$. A current that circulates without accumulating probability anywhere is compatible with a stationary density.
+
+%% \subsection{Sliding-bar circuit}
+%% The state is $X=(x,p,\Phi)$, with $p=Mv$ and $\Phi=L(x)I$, where $dL/dx=a$. In {\tt noise\_derivation.pdf} the probability density $\rho$ is called $P$. The energy is
+%% \begin{align}
+%%   H&=\frac{p^2}{2M}+\frac{\Phi^2}{2L(x)},
+%% \end{align}
+%% with the derivatives
+%% \begin{align}
+%%   \frac{\partial H}{\partial p}=\frac{p}{M}=v,\qquad\frac{\partial H}{\partial\Phi}=\frac{\Phi}{L}=I,\qquad\frac{\partial H}{\partial x}=-\frac{a\Phi^2}{2L^2}=-\frac{aI^2}{2}.
+%% \end{align}
+%% The equations of motion are
+%% \begin{align}
+%%   \dot{x}&=\frac{\partial H}{\partial p},\nonumber\\
+%%   \dot{p}&=-\frac{\partial H}{\partial x}-lB_0\frac{\partial H}{\partial\Phi},\nonumber\\
+%%   \dot{\Phi}&=lB_0\frac{\partial H}{\partial p}-R\frac{\partial H}{\partial\Phi}+g\Gamma(t).
+%%   \label{eom}
+%% \end{align}
+%% These have the form (\ref{langevin}) with a single white noise, $m=1$. The drift is
+%% \begin{align}
+%%   b&=(A-K)\nabla H,\qquad
+%%   A=\begin{pmatrix}0&1&0\\-1&0&-lB_0\\0&lB_0&0\end{pmatrix},\qquad
+%%   K=\begin{pmatrix}0&0&0\\0&0&0\\0&0&R\end{pmatrix},
+%% \end{align}
+%% where $A$ is a constant antisymmetric matrix that contains the conservative terms, and $K$ is a symmetric matrix that contains the dissipation. The noise enters only in $\Phi$ and with a constant amplitude, so
+%% \begin{align}
+%%   \sigma=\begin{pmatrix}0\\0\\g\end{pmatrix},\qquad
+%%   D=\sigma\sigma^T=\begin{pmatrix}0&0&0\\0&0&0\\0&0&g^2\end{pmatrix}.
+%% \end{align}
+%% The noise is additive, and there is no difference between the It\^o and Stratonovich interpretations. Since $D$ is constant, the probability current (\ref{current}) splits as
+%% \begin{align}
+%%   J&=J^c+J^d,\nonumber\\
+%%   J^c_i&=A_{ij}\partial_jH\,\rho,\nonumber\\
+%%   J^d_i&=-K_{ij}\partial_jH\,\rho-\frac{1}{2}D_{ij}\partial_j\rho,
+%% \end{align}
+%% the conservative part, and the dissipative plus noise part.
+
+%% {\bf Conservative part:} Let the density be any function of the energy, $\rho=F(H)$. Then
+%% \begin{align}
+%%   \partial_iJ^c_i&=A_{ij}\partial_i\partial_jH\,F(H)+A_{ij}\partial_iH\partial_jH\,F'(H)\nonumber\\
+%%   &=0,
+%% \end{align}
+%% since each term is the contraction of the antisymmetric $A_{ij}$ with a symmetric quantity. The conservative part of the dynamics moves the probability along the surfaces of constant energy, with a current $J^c$ that is not zero but has zero divergence, and leaves any function of $H$ stationary.
+
+%% {\bf Dissipative and noise part:} $K$ and $D$ have only a $\Phi\Phi$ component, so $J^d$ has only a $\Phi$ component
+%% \begin{align}
+%%   J_{\Phi}&=-R\frac{\Phi}{L}\rho-\frac{g^2}{2}\frac{\partial\rho}{\partial\Phi}.
+%% \end{align}
+%% The first term is the drift of the flux towards zero due to the resistance, and the second term is the diffusion of the flux due to the Johnson emf. For the Gibbs density
+%% \begin{align}
+%%   \rho&=\frac{1}{Z}e^{-H/kT},\qquad\frac{\partial\rho}{\partial\Phi}=-\frac{1}{kT}\frac{\partial H}{\partial\Phi}\rho=-\frac{\Phi}{LkT}\rho,
+%% \end{align}
+%% the two terms are proportional to each other
+%% \begin{align}
+%%   J_{\Phi}&=\frac{\Phi}{L}\rho\left(\frac{g^2}{2kT}-R\right).
+%% \end{align}
+%% Since the conservative part does not contribute, the Gibbs density is stationary if and only if $\partial J_{\Phi}/\partial\Phi=0$. From
+%% \begin{align}
+%%   \frac{\partial J_{\Phi}}{\partial\Phi}&=\frac{1}{L}\left(1-\frac{\Phi^2}{LkT}\right)\rho\left(\frac{g^2}{2kT}-R\right),
+%% \end{align}
+%% which is not identically zero unless the last factor vanishes, the Gibbs density is stationary if and only if
+%% \begin{align}
+%%   g^2&=2kTR,
+%% \end{align}
+%% in which case the current $J_{\Phi}$ itself vanishes for every $x$: the drift caused by the resistance and the diffusion caused by the noise balance each other at every point. This is the fluctuation-dissipation relation, written in general as $D=2kTK$. With this value of $g$,
+%% \begin{align}
+%%   \rho&\propto\exp\left(-\frac{p^2}{2MkT}-\frac{\Phi^2}{2L(x)kT}\right),
+%% \end{align}
+%% which is Gaussian in $p$ and, for each $x$, in $\Phi$, with $\langle p^2\rangle=MkT$ and $\langle\Phi^2|x\rangle=L(x)kT$, that is, $\langle Mv^2\rangle=\langle LI^2\rangle=kT$. Integrating over $p$ and $\Phi$ leaves a density in $x$ proportional to $\sqrt{L(x)}$, so the Gibbs density can be normalized only if $x$ is confined to a bounded range.
+
+%% {\bf Equation for the current:} It\^o's formula gives the equation for $I=\Phi/L(x)$ from (\ref{eom}). The only non-zero component of the diffusion matrix is $D_{\Phi\Phi}=g^2$ and $\partial^2I/\partial\Phi^2=0$, so the second order term in (\ref{ito}) vanishes and the ordinary chain rule applies
+%% \begin{align}
+%%   dI&=\frac{\partial I}{\partial x}dx+\frac{\partial I}{\partial\Phi}d\Phi\nonumber\\
+%%   &=-\frac{aI}{L}v\,dt+\frac{1}{L}\left[(lB_0v-RI)dt+g\,dW\right]\nonumber\\
+%%   &=\left[\frac{lB_0v}{L}-\frac{1}{L}(R+av)I\right]dt+\frac{g}{L}dW,
+%% \end{align}
+%% which is the circuit equation with the noise amplitude $c(t)=g/L(x(t))=\sqrt{2kTR}/L(x(t))$.
+
+\begin{thebibliography}{9}
+
+\bibitem{gillespie}
+D.~T.~Gillespie, The mathematics of Brownian motion and Johnson noise, Am.\ J.\ Phys.\ {\bf 64}, 225--240 (1996).
+
+\bibitem{pavliotis}
+G.~A.~Pavliotis, {\it Stochastic Processes and Applications: Diffusion Processes, the Fokker-Planck and Langevin Equations}, Texts in Applied Mathematics, Vol.~60 (Springer, New York, 2014).
+
+\end{thebibliography}
+
+\end{document} 
