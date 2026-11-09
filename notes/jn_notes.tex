@@ -69,21 +69,21 @@ By equating (\ref{ivar1}) and (\ref{ivar2}) we get
 \begin{align}
   g&=\sqrt{2k_BTR^*}.
 \end{align}
-We see that $g$ does not depend on $L(x)$, and it is a function only of the temperature and resistance of the circuit.\\
+We see that $g$ does not depend on $L(x)$, and it is a function only of the temperature and resistance of the circuit. Since the resistance changes as the bar moves, $g=\sqrt{2k_BTR(x)}$ depends on the position of the bar, as the second derivation below confirms.\\
 
 The form of $g$ can also be verified following a different route. 
 The equations of motion (\ref{eom}) have the form (\ref{langevin}) with a single white noise, $m=1$. The drift is
 \begin{align}
   b&=(A-K)\nabla H,\qquad
   A=\begin{pmatrix}0&1&0\\-1&0&-lB_0\\0&lB_0&0\end{pmatrix},\qquad
-  K=\begin{pmatrix}0&0&0\\0&0&0\\0&0&R\end{pmatrix},
+  K=\begin{pmatrix}0&0&0\\0&0&0\\0&0&R(x)\end{pmatrix},
 \end{align}
-where $A$ is a constant antisymmetric matrix that contains the conservative terms, and $K$ is a symmetric matrix that contains the dissipation. The noise enters only in $\Phi$ and with a constant amplitude, so
+where $A$ is a constant antisymmetric matrix that contains the conservative terms, and $K$ is a symmetric matrix that contains the dissipation. The noise enters only in $\Phi$, with an amplitude $g(x)$ that depends on $x$ but not on $\Phi$, so
 \begin{align}
   \sigma=\begin{pmatrix}0\\0\\g\end{pmatrix},\qquad
   D=\sigma\sigma^T=\begin{pmatrix}0&0&0\\0&0&0\\0&0&g^2\end{pmatrix}.
 \end{align}
-The noise is additive, and there is no difference between the It\^o and Stratonovich interpretations. Since $D$ is constant, the probability current (\ref{current}) splits as
+The noise is not strictly additive, since $\sigma$ depends on $x$, but it acts only on $\Phi$ and does not depend on $\Phi$. The It\^o-Stratonovich correction $\frac{1}{2}\sigma_k\partial_k\sigma_i=\frac{1}{2}g\,\partial_\Phi g$ therefore vanishes, and there is no difference between the two interpretations. For the same reason $D_{\Phi\Phi}=g(x)^2$ can be taken out of $\partial_j(D_{ij}\rho)=\delta_{i\Phi}\partial_\Phi(g^2\rho)$ (see Sec.~\ref{sec:movingbar}), and the probability current (\ref{current}) splits as
 \begin{align}
   J&=J^c+J^d,\nonumber\\
   J^c_i&=A_{ij}\partial_jH\,\rho,\nonumber\\
@@ -230,7 +230,7 @@ From here on we drop the asterisks for brevity, and all quantities are dimension
 \end{align}
 with $H=p^2/2M+\Phi^2/2L$ and $g=\sqrt{2TR}$.
 
-\subsection{Equilibrium with a moving bar}
+\subsection{Equilibrium with a moving bar}\label{sec:movingbar}
 In the first derivation of $g$ in Sec.~1.1 the position $x$ is frozen, and $L$ and $R$ take fixed equilibrium values. In the simulation, however, $x$ changes in time, and the noise amplitude $g/L(x(t))$ of the circuit equation (\ref{dI}) changes with it. Here we argue that this dependence does not prevent the system from reaching equilibrium, and we point out what can.
 
 {\bf The $x$-dependence is harmless:} The first derivation is a heuristic, valid only for fixed $x$, but the second derivation does not freeze $x$. With $g^2=2kTR(x)$, Eq.~(\ref{fdr}), the dissipative plus noise current (\ref{jphi}) vanishes at every point $(x,p,\Phi)$ of phase space, and not only on average, whatever the functions $L(x)$ and $R(x)$ are. The conservative part leaves any function of $H=p^2/2M+\Phi^2/2L(x)$ stationary. Therefore the Gibbs density (\ref{gibbs}) is an exact stationary solution of the full dynamics, with the bar free to move.
@@ -640,7 +640,7 @@ The left hand side is $(P_hf)(x)$, so the generator $G=\lim_{h\rightarrow 0^+}(P
 \begin{align}
   Gf&=b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf.
 \end{align}
-Its adjoint is obtained by integrating by parts, for a density $\rho$ that vanishes at infinity,
+Its adjoint is obtained by integrating by parts, assuming $f$ is bounded with bounded first and second derivatives and that $b_i\rho$, $D_{ij}\rho$ and $\partial_j(D_{ij}\rho)$ decay fast enough at infinity for the boundary terms to vanish,
 \begin{align}
   \langle Gf,\rho\rangle&=\int_{\mathbb{R}^d}\left(b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf\right)\rho\,dx\nonumber\\
   &=\int_{\mathbb{R}^d}f\left(-\partial_i(b_i\rho)+\frac{1}{2}\partial_i\partial_j(D_{ij}\rho)\right)dx\nonumber\\
