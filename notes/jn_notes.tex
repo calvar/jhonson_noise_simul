@@ -227,6 +227,7 @@ From here on we drop the asterisks for brevity, and all quantities are dimension
   \frac{dx}{dt}&=v,\nonumber\\
   \frac{dv}{dt}&=-\frac{4\pi l}{M}I+\frac{1}{2M}L'I^2,\nonumber\\
   \frac{dI}{dt}&=\frac{4\pi l}{L}v-\frac{1}{L}\left(R+L'v\right)I+\frac{g}{L}\Gamma(t),
+  \label{eomdimless}
 \end{align}
 with $H=p^2/2M+\Phi^2/2L$ and $g=\sqrt{2TR}$.
 
@@ -251,6 +252,167 @@ The factor $1/L(x)$ in the noise amplitude of (\ref{dI}) is only the result of t
 \end{itemize}
 
 {\bf Check in the simulation:} Bin the samples by $x$ and verify that $\langle Mv^2\rangle\simeq kT$ and $\langle L(x)I^2\rangle\simeq kT$ in each bin. A slow outward drift of the histogram of $x$ is the effect of the $\sqrt{L(x)}$ marginal density, not a failure of the noise amplitude $g/L(x)$.
+
+
+\subsection{Numerical algorithm: BAOAB splitting}\label{sec:baoab}
+In this section we derive an algorithm to integrate the equations of motion (\ref{eomdimless}) with Johnson noise. It plays the role that the kick-drift-kick scheme of Sec.~5.1 of \cite{alvarez} plays for the deterministic problem, and it is built on the BAOAB splitting of Leimkuhler and Matthews \cite{leimkuhler}, in the form given for variable coefficients by Sachs, Leimkuhler and Danos \cite{sachs}. We use the dimensionless units of Sec.~1.2, with $k_B=1$, $B_0=1$, and we write
+\begin{align}
+  \lambda&=4\pi l
+\end{align}
+for the coupling between the bar and the circuit. The time step is $h$.
+
+{\bf Why a splitting method:} The Euler-Maruyama scheme applied to (\ref{eomdimless}) samples the Gibbs density (\ref{gibbs}) with an error of order $h$ (Sec.~\ref{sec:movingbar}), it treats explicitly the relaxation of the current, with rate $R/L$, and its noise increment $g\sqrt{h}/L(x)$ diverges as $x\to0$. The deterministic scheme of \cite{alvarez}, Eqs.~(87)-(90) there, is second order, but it was not designed for noise. A noise increment could be added to the trapezoidal update of $I$, but in the variable $I$ the noise amplitude $g/L(x)$ and the drift term $-L'vI/L$ both change during the drift of the bar, since they come from the change of variables $I=\Phi/L(x)$ (Sec.~\ref{sec:movingbar}), and there is no principled choice of where to evaluate them, nor any control of the density that the discrete scheme samples. A {\it splitting method} \cite{leimkuhler} avoids these problems: the generator of the process is written as a sum of pieces whose flows can be computed exactly, and one time step is a composition of these exact flows. The dissipation and the noise are kept together in one piece, so that this piece satisfies the fluctuation-dissipation relation by itself and leaves the Gibbs density invariant. A symmetric composition gives a scheme of weak order two, and among the symmetric compositions with one force evaluation per step the sequence BAOAB has the smallest error in equilibrium averages in the cases where they have been compared \cite{leimkuhler,sachs}.
+
+{\bf The BAOAB scheme of Sachs et al.:} The Langevin system considered in \cite{sachs} is
+\begin{align}
+  \frac{dq}{dt}=M^{-1}p,\qquad\frac{dp}{dt}=F(q)-\gamma(q)p+\Sigma(q)\Gamma(t),
+  \label{sachslangevin}
+\end{align}
+where we write $\gamma(q)$ for their friction matrix and $\Gamma(t)$ for the white noise, to keep the notation of these notes (\cite{sachs} uses $\Gamma$ for the friction and $G$ for $e^{-h\Gamma/2}$, while here $G$ is the generator). The generator is split into three parts: A, the drift of the positions $\dot{q}=M^{-1}p$; B, the kick of the momenta $\dot{p}=F(q)$; and O, the Ornstein-Uhlenbeck process $\dot{q}=0$, $\dot{p}=-\gamma(q)p+\Sigma(q)\Gamma(t)$ at frozen $q$. Since $\gamma$ and $\Sigma$ are matrices, the exact solution of O requires a matrix exponential, a Lyapunov equation and a Cholesky decomposition, and Ref.~\cite{sachs} replaces it with $K$ substeps of length $h/K$ of the approximate update
+\begin{align}
+  p\leftarrow c^2p+c\sqrt{h/K}\,\Sigma(q)\xi,\qquad c=e^{-\frac{h}{2K}\gamma(q)},\qquad\xi\sim N(0,1),
+  \label{dfd}
+\end{align}
+which is their Algorithm~1 (m-BAOAB).\footnote{As printed, Algorithm 1 of \cite{sachs} starts with the drift of $q$ and then applies the kick, i.e., it executes the sequence ABOBA, although it is called BAOAB, and it assumes $M=I$. Here we use the sequence B-A-O-A-B of the name, as in \cite{leimkuhler}. The two sequences are not equivalent: they produce different invariant measures for finite $h$, and BAOAB is the one with the smaller error in configurational averages \cite{leimkuhler}.}
+
+{\bf Choice of variables:} The splitting is done in the variables $(x,p,\Phi)$ of (\ref{eom}), not in $(x,v,I)$. With $l B_0\to\lambda$ the equations of motion read
+\begin{align}
+  dx&=\frac{p}{M}dt,\nonumber\\
+  dp&=\left(\frac{L'\Phi^2}{2L^2}-\lambda\frac{\Phi}{L}\right)dt,\nonumber\\
+  d\Phi&=\left(\lambda\frac{p}{M}-R\frac{\Phi}{L}\right)dt+g\,dW,
+  \label{eomxpphi}
+\end{align}
+with $g=\sqrt{2TR(x)}$. In these variables the noise is additive in $\Phi$ for fixed $x$, the dissipation is the single term $-R\Phi/L$, and the term $-L'vI/L$ of the equation for $I$ is absent. The energy $H=p^2/2M+\Phi^2/2L(x)$ has the form of a kinetic energy of the two momenta $(p,\Phi)$ with the position-dependent mass matrix ${\rm diag}(M,L(x))$, and $x$ is the only position. Compared with (\ref{sachslangevin}), with $q=x$ and momenta $(p,\Phi)$, there are three differences: (i) the antisymmetric coupling $\lambda$ between $p$ and $\Phi$, which has the structure of a gyroscopic force and appears as $\lambda p/M$ in the equation for $\Phi$ and as $-\lambda\Phi/L$ in the equation for $p$; (ii) the mass $L(x)$ of $\Phi$ depends on the position, which produces the force $L'\Phi^2/2L^2$ on the bar; and (iii) the friction $R/L$ and the noise $g$ act only on $\Phi$, so the momentum $p$ of the bar is not damped directly. Therefore the scheme of \cite{sachs} cannot be applied literally, but its principle can: split into exactly solvable flows, keep the friction and the noise together, and compose symmetrically.
+
+{\bf A Casimir:} The matrix $A$ in (\ref{eom}) has the null vector $(-\lambda,0,1)$, so the function
+\begin{align}
+  C&=\Phi-\lambda x
+  \label{casimir}
+\end{align}
+satisfies $A\nabla C=0$. $C$ is a {\it Casimir} of the bracket defined by $A$: it is conserved by the conservative part of the dynamics whatever the energy is. Physically, $C$ is the total magnetic flux through the circuit, the flux $\Phi=LI$ of the induced field plus the flux $-lB_0x$ of the applied field with the orientation implied by (\ref{eom}). For $R=0$ the total flux through a perfectly conducting circuit cannot change, and for $R>0$ it changes only through the resistance and the noise, $dC=-R(\Phi/L)dt+g\,dW$. The change of variables $(x,p,\Phi)\to(x,p,C)$ is linear with unit Jacobian, and in the new variables
+\begin{align}
+  H&=\frac{p^2}{2M}+U_C(x),\qquad U_C(x)=\frac{(C+\lambda x)^2}{2L(x)},\nonumber\\
+  dx&=\frac{\partial H}{\partial p}dt,\qquad dp=-\frac{\partial H}{\partial x}dt,\qquad dC=-R\frac{\partial H}{\partial C}dt+\sqrt{2TR}\,dW.
+  \label{xpc}
+\end{align}
+That is, $(x,p)$ is a canonical pair moving in the potential $U_C(x)$, without friction, while $C$ performs an overdamped Brownian motion with mobility $R$ in the same energy. This form is the key to the structure of the algorithm below.
+
+{\bf Splitting of the generator:} Following the appendix, the generator of (\ref{eomxpphi}) is $Gf=b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf$, with $b=(A-K)\nabla H$ and $D_{\Phi\Phi}=g^2$. We split the energy as $H=H_1+H_2$, with $H_1=p^2/2M$ and $H_2=\Phi^2/2L(x)$, and take the flow of each part with the same matrix $A$. Then $G=\mathcal{L}_A+\mathcal{L}_B+\mathcal{L}_O$, with
+\begin{align}
+  \mathcal{L}_Af&=(A\nabla H_1)\cdot\nabla f=\frac{p}{M}\left(\frac{\partial f}{\partial x}+\lambda\frac{\partial f}{\partial\Phi}\right),\nonumber\\
+  \mathcal{L}_Bf&=(A\nabla H_2)\cdot\nabla f=F(x,\Phi)\frac{\partial f}{\partial p},\qquad F(x,\Phi)=\frac{L'\Phi^2}{2L^2}-\lambda\frac{\Phi}{L}=\frac{1}{2}L'I^2-\lambda I,\nonumber\\
+  \mathcal{L}_Of&=-\frac{R}{L}\Phi\frac{\partial f}{\partial\Phi}+\frac{g^2}{2}\frac{\partial^2f}{\partial\Phi^2},
+  \label{splitops}
+\end{align}
+where $I=\Phi/L(x)$. Adding the three drifts gives back (\ref{eomxpphi}). The flow of each part over a time $h$ is computed exactly:
+\begin{itemize}
+\item {\it A, the drift.} $\dot{x}=p/M$, $\dot{p}=0$, $\dot{\Phi}=\lambda p/M$. Since $p$ is constant,
+  \begin{align}
+    x\leftarrow x+h\frac{p}{M},\qquad\Phi\leftarrow\Phi+\lambda h\frac{p}{M}.
+    \label{flowA}
+  \end{align}
+  The bar moves with constant velocity and the flux of the induced field changes by $\lambda\Delta x$, the integral of the motional emf $\lambda v$. The Casimir $C$ is unchanged.
+\item {\it B, the kick.} $\dot{x}=0$, $\dot{\Phi}=0$, $\dot{p}=F(x,\Phi)$. Since $F$ depends only on $x$ and $\Phi$, which are constant,
+  \begin{align}
+    p\leftarrow p+hF(x,\Phi).
+    \label{flowB}
+  \end{align}
+  In terms of $I$ this is the same kick as in Eqs.~(87) and (90) of \cite{alvarez}: the braking force $-\lambda I$ plus the inductance-gradient force $\frac{1}{2}L'I^2$.
+\item {\it O, the resistance and the Johnson emf.} $\dot{x}=0$, $\dot{p}=0$, $d\Phi=-(R/L)\Phi\,dt+g\,dW$, an Ornstein-Uhlenbeck process with constant coefficients, since $x$ is frozen. Its exact solution is given below, Eq.~(\ref{ostep}).
+\end{itemize}
+In the variables (\ref{xpc}), A is the drift $x\leftarrow x+hp/M$ at constant $C$, and B is the kick $p\leftarrow p-hU_C'(x)$, since $-U_C'=F$, so A and B are exactly the A and B parts of the standard BAOAB scheme for a particle in the potential $U_C$. The difference with (\ref{sachslangevin}) is that O acts on the variable $C$ instead of on the momentum.
+
+{\bf Phase-space volume and the Gibbs density:} The drifts of A and B are $A\nabla H_i$, with divergence $A_{ij}\partial_i\partial_jH_i=0$, since $A$ is antisymmetric, so both flows preserve phase-space volume, and each one conserves its own energy, $\nabla H_i\cdot A\nabla H_i=0$. Neither of them conserves $H$, however. For $\rho\propto e^{-H/T}$ and a divergence-free drift $b$, $\mathcal{L}^*\rho=-\nabla\cdot(b\rho)=(\rho/T)\,b\cdot\nabla H$, and
+\begin{align}
+  \mathcal{L}_A^*\rho&=\frac{\rho}{T}(A\nabla H_1)\cdot\nabla H_2=\frac{\rho}{T}\frac{p}{M}\left(\lambda I-\frac{1}{2}L'I^2\right),\nonumber\\
+  \mathcal{L}_B^*\rho&=\frac{\rho}{T}(A\nabla H_2)\cdot\nabla H_1=-\mathcal{L}_A^*\rho,
+\end{align}
+where the second equality uses the antisymmetry of $A$. The bracket is the power transferred between the bar and the field, $v(\lambda I-\frac{1}{2}L'I^2)$: A transfers energy from the bar to the field and B returns it. Only the sum is zero, $(\mathcal{L}_A^*+\mathcal{L}_B^*)\rho=-\nabla\cdot(J^c)=0$, as found in Sec.~1.1 for the conservative current. Finally, $\mathcal{L}_O^*\rho=-\partial_\Phi J_\Phi$ with the current (\ref{jphi}), which vanishes identically by (\ref{fdr}). Therefore O leaves the Gibbs density invariant by itself, for every $x$, while A and B do so only together. This is the same situation as in the standard BAOAB scheme, and it means that the discrete scheme samples a density that differs from (\ref{gibbs}) by a small amount that vanishes as $h\to0$ (see the consistency checks below).
+
+{\bf The exact O-step:} For frozen $x$ write $\kappa=R(x)/L(x)$. The solution of $d\Phi=-\kappa\Phi\,dt+g\,dW$ is
+\begin{align}
+  \Phi(t+h)&=e^{-\kappa h}\Phi(t)+g\int_t^{t+h}e^{-\kappa(t+h-s)}dW(s),
+\end{align}
+and the stochastic integral is a Gaussian with zero mean and variance $g^2\int_0^he^{-2\kappa s}ds=g^2(1-e^{-2\kappa h})/2\kappa$. Using $g^2=2TR$, Eq.~(\ref{fdr}), the variance is $TL(1-e^{-2\kappa h})$, and the exact O-step is
+\begin{align}
+  \Phi\leftarrow c\,\Phi+\sqrt{TL(x)\left(1-c^2\right)}\,\xi,\qquad c=e^{-hR(x)/L(x)},\qquad\xi\sim N(0,1).
+  \label{ostep}
+\end{align}
+If $\Phi\sim N(0,TL(x))$ before the step, then after it $\Phi$ is Gaussian with variance $c^2TL+TL(1-c^2)=TL$, so the step preserves the conditional equilibrium $\langle\Phi^2|x\rangle=TL(x)$ exactly, for any $h$. In the language of \cite{sachs}, the friction is $\gamma=R/L$ and $\Sigma=g$, both scalars acting on the single component $\Phi$, the Lyapunov equation $\gamma C_t+C_t\gamma=\Sigma^2$ is solved by $C_t=g^2L/2R=TL$, and the matrix exponential and the Cholesky factor are the numbers $c$ and $\sqrt{TL(1-c^2)}$. The exact step costs one exponential, and there is no need for the substeps of m-BAOAB. For comparison, the update (\ref{dfd}) with substep $\delta=h/K$ has the stationary variance
+\begin{align}
+  \frac{c^2\delta g^2}{1-c^4}=TL\frac{\kappa\delta}{\sinh\kappa\delta}=TL\left(1-\frac{(\kappa\delta)^2}{6}+\dots\right),
+\end{align}
+that is, a temperature error of order $(\kappa h/K)^2$, which vanishes only as $K\to\infty$. Two limits of (\ref{ostep}) are worth noting. For $\kappa h\to0$, $c\simeq1-\kappa h$ and $\sqrt{TL(1-c^2)}\simeq\sqrt{2TRh}=g\sqrt{h}$, the Euler-Maruyama increment; in the code $1-c^2$ should be computed as $-{\rm expm1}(-2\kappa h)$ to avoid the loss of precision. For $\kappa h\to\infty$, $c\to0$ and the step simply draws $\Phi$ from its conditional equilibrium $N(0,TL)$. The step is therefore stable for any $h$, even where $L(x)\to0$. For the rails $\kappa=R/L\simeq2/\ln(l/d)$ is approximately independent of $x$ (Sec.~1.2), and the divergence of $g/L$ as $x\to0$ does not affect the O-step at all; it reappears, however, in the kick, as discussed in the practical remarks.
+
+{\bf The algorithm:} Composing the exact flows in the symmetric sequence B$(h/2)$A$(h/2)$O$(h)$A$(h/2)$B$(h/2)$, one time step from $(x_i,p_i,\Phi_i)$ to $(x_{i+1},p_{i+1},\Phi_{i+1})$ is
+\begin{align}
+  p_{i+1/2}&=p_i+\frac{h}{2}F(x_i,\Phi_i),\nonumber\\
+  x_m&=x_i+\frac{h}{2}\frac{p_{i+1/2}}{M},\qquad\Phi'=\Phi_i+\lambda\frac{h}{2}\frac{p_{i+1/2}}{M},\nonumber\\
+  \Phi''&=c\,\Phi'+\sqrt{TL(x_m)(1-c^2)}\,\xi_i,\qquad c=e^{-hR(x_m)/L(x_m)},\nonumber\\
+  x_{i+1}&=x_m+\frac{h}{2}\frac{p_{i+1/2}}{M},\qquad\Phi_{i+1}=\Phi''+\lambda\frac{h}{2}\frac{p_{i+1/2}}{M},\nonumber\\
+  p_{i+1}&=p_{i+1/2}+\frac{h}{2}F(x_{i+1},\Phi_{i+1}),
+  \label{algxpphi}
+\end{align}
+with $F$ given in (\ref{splitops}) and $\xi_i\sim N(0,1)$ independent at each step. Since the two A half-steps have the same velocity, $x_m=(x_i+x_{i+1})/2$ is exactly the midpoint of the drift, the same point, Eq.~(86) of \cite{alvarez}, at which the circuit is updated there. In the variables $(x,v,I)$ of (\ref{eomdimless}), with $I=\Phi/L(x)$ recomputed after every substep that changes $x$ or $\Phi$, the same step reads:
+\begin{enumerate}
+\item Half kick:
+  \begin{align}
+    v_{i+1/2}&=v_i+\frac{h}{2M}\left[-\lambda I_i+\frac{1}{2}L'(x_i)I_i^2\right].
+  \end{align}
+\item Half drift, with the motional emf:
+  \begin{align}
+    x_m=x_i+\frac{h}{2}v_{i+1/2},\qquad I'=\frac{L(x_i)I_i+\lambda\frac{h}{2}v_{i+1/2}}{L(x_m)}.
+  \end{align}
+\item Resistance and Johnson emf, at the midpoint:
+  \begin{align}
+    I''=c\,I'+\sqrt{\frac{T(1-c^2)}{L(x_m)}}\,\xi_i,\qquad c=e^{-hR(x_m)/L(x_m)}.
+  \end{align}
+\item Half drift, with the motional emf:
+  \begin{align}
+    x_{i+1}=x_m+\frac{h}{2}v_{i+1/2},\qquad I_{i+1}=\frac{L(x_m)I''+\lambda\frac{h}{2}v_{i+1/2}}{L(x_{i+1})}.
+  \end{align}
+\item Half kick:
+  \begin{align}
+    v_{i+1}&=v_{i+1/2}+\frac{h}{2M}\left[-\lambda I_{i+1}+\frac{1}{2}L'(x_{i+1})I_{i+1}^2\right].
+  \end{align}
+\end{enumerate}
+Each step evaluates $L$ and $R$ at $x_m$ and $L$ and $L'$ at $x_{i+1}$; the values at $x_{i+1}$ are reused as the values at $x_i$ in the next step, so the circuit functions are evaluated at two points per step, as in \cite{alvarez}, and one Gaussian random number is drawn per step. To restore the dimensional form replace $\lambda\to lB_0$ and $T\to k_BT$, with $g=\sqrt{2k_BTR}$. A confining potential $U_w(x)$ for the bar, if present, is added to $H_2$, and its force $-U_w'(x)$ is added to both kicks.
+
+{\bf Relation with the deterministic algorithm:} The kicks are Eqs.~(87) and (90) of \cite{alvarez}. For $T=0$ steps 2-4 give $\Phi_{i+1}=c\,\Phi_i+\lambda\frac{h}{2}(1+c)v_{i+1/2}$, an exponential integrator for $\dot{\Phi}=\lambda v-R\Phi/L$ with $L$ and $R$ frozen at $x_m$. Multiplying Eq.~(89) of \cite{alvarez} by $L(x_m)$ and using $L(x_m)\pm\frac{h}{2}L'(x_m)v_{i+1/2}=L(x_{i+1}),L(x_i)$ up to the same term $\frac{h^2}{8}L''v_{i+1/2}^2$, which multiplies $I_{i+1}$ and $I_i$ and therefore cancels up to order $h^3$, it becomes $\Phi_{i+1}-\Phi_i=h\lambda v_{i+1/2}-\frac{h}{2}R(x_m)(I_i+I_{i+1})+O(h^3)$, the trapezoidal rule for the same equation in the variable $\Phi$. The two updates differ by a term of order $h^3$ per step (by $\Phi h^3\kappa^3/12$ for constant $\kappa$), and both are second order. When $L$ is linear in $x$, as for the rails of Sec.~1.2, the identity above is exact and for $R=0$ the two schemes coincide. In general, the scheme of \cite{alvarez} conserves the Casimir (\ref{casimir}) up to an error of order $h^3$ per step when $R=0$, while (\ref{algxpphi}) conserves it exactly.
+
+{\bf Consistency checks:}
+\begin{itemize}
+\item {\it Hamiltonian limit, $R=0$, $T=0$.} The O-step is the identity, $C$ is exactly conserved, and the step is B$(h/2)$A$(h)$B$(h/2)$, which in the variables (\ref{xpc}) is the St\"ormer-Verlet scheme for $H=p^2/2M+U_C(x)$ with fixed $C$. It is therefore symplectic in $(x,p)$, volume preserving in $(x,p,\Phi)$, time reversible and second order, and its energy error stays bounded, of order $h^2$, without secular drift over long times.
+\item {\it Deterministic limit, $T=0$, $R>0$.} The O-step is $\Phi\leftarrow e^{-hR/L}\Phi$, the exact flow of the dissipation, and the scheme is a symmetric (Strang) composition of exact flows, of second order.
+\item {\it Weak order.} By the Baker-Campbell-Hausdorff formula the symmetric composition satisfies
+  \begin{align}
+    e^{\frac{h}{2}\mathcal{L}_B}e^{\frac{h}{2}\mathcal{L}_A}e^{h\mathcal{L}_O}e^{\frac{h}{2}\mathcal{L}_A}e^{\frac{h}{2}\mathcal{L}_B}&=e^{hG+O(h^3)},
+  \end{align}
+  so we expect weak order two on finite time intervals and an error of order $h^2$ in equilibrium averages, assuming smooth $L(x)>0$, $R(x)>0$ and ergodicity. For the standard Langevin equation with constant coefficients this is proved in \cite{leimkuhler}, where it is also shown that the error of BAOAB in configurational averages is exceptionally small (its leading term vanishes in the limit of large friction, and the configurational sampling is exact for a harmonic potential). Those finer results rely on O acting on the momentum and do not carry over here, where O acts on $C$. For the present system, with $x$-dependent coefficients and the coupling $\lambda$, the order two of the bias is expected, not proved.
+\item {\it Equilibrium.} The averages $\langle Mv^2|x\rangle=\langle L(x)I^2|x\rangle=T$ of Sec.~\ref{sec:movingbar} are reproduced up to an error of order $h^2$, compared with order $h$ for the Euler-Maruyama scheme.
+\item {\it Fixed bar.} For $M\to\infty$ with $v=0$, A and B do nothing, and the scheme reduces to (\ref{ostep}), the exact update of the Ornstein-Uhlenbeck process of Sec.~1.1, for any $h$.
+\end{itemize}
+
+{\bf Numerical test:} For the rails, $L=8\pi x\ln l$ and $R=16\pi x$ in the units of Sec.~1.2, with $l=10$, $M=10$, $T=1$, and harmonic walls of stiffness 10 confining the bar to $5\lesssim x\lesssim15$, an ensemble of 2000 trajectories gives:
+\begin{center}
+\begin{tabular}{c|cc|cc}
+  & \multicolumn{2}{c|}{BAOAB} & \multicolumn{2}{c}{Euler-Maruyama}\\
+  $h$ & $\langle Mv^2\rangle$ & $\langle LI^2\rangle$ & $\langle Mv^2\rangle$ & $\langle LI^2\rangle$\\\hline
+  0.2 & 1.000 & 1.030 & 3.36 & 3.42\\
+  0.1 & 1.001 & 1.009 & 1.62 & 1.64\\
+  0.05 & 0.999 & 1.002 & 1.22 & 1.23\\
+  0.025 & 1.002 & 1.001 & 1.10 & 1.11
+\end{tabular}
+\end{center}
+with statistical errors of about $0.002$. The error of $\langle LI^2\rangle$ decreases as $h^2$ with BAOAB and as $h$ with Euler-Maruyama, and with BAOAB $\langle Mv^2\rangle$ shows no error within the statistical precision. The same holds bin by bin in $x$, and the mean position agrees, within its larger statistical error, with the marginal density $\propto\sqrt{L(x)}e^{-U_w(x)/T}$. The time scales are $L/R\simeq1.2$ and $1/\omega\simeq0.4$-$0.7$.
+
+{\bf Practical remarks:}
+\begin{itemize}
+\item {\it Time step.} The O-step is exact, so $hR/L$ is limited only by accuracy, not by stability. The A-B part is a Verlet scheme and requires $h\omega<2$ for stability, with $\omega^2=\lambda^2/ML(x)$ from (\ref{oscillator}), and $h\omega\lesssim0.2$ for accurate averages; the stiffness of the walls, if any, adds a similar condition.
+\item {\it Small $x$.} As $x\to0$, $L\to0$ and $\omega\to\infty$, and with $\Phi\sim\sqrt{TL}$ the current $I\sim\sqrt{T/L}$ and the mean force $\frac{1}{2}L'\langle I^2\rangle=TL'/2L$ diverge. A lower bound on $x$ (a wall) or a time step adapted to $L(x)$ is needed there.
+\item {\it Confinement.} A global equilibrium requires confining the bar (Sec.~\ref{sec:movingbar}). A smooth confining potential enters through the kicks and keeps all the properties above, and the marginal density becomes $\propto\sqrt{L(x)}e^{-U_w(x)/T}$. A hard wall can be implemented by reflecting $x$ and $v$ during A, but then $\Phi$ must be set to $C+\lambda x$ at the reflected position to keep the Casimir, and the scheme loses its second order at the collisions.
+\item {\it Tests.} (a) For $R=T=0$, the energy error should scale as $h^2$ and stay bounded, and $\Phi-\lambda x$ should be constant to round-off. (b) For $T>0$, histograms of $v$ and $I$ in bins of $x$ should be Gaussian, with $\langle Mv^2|x\rangle=\langle L(x)I^2|x\rangle=T$. (c) The equilibrium averages should converge as $h^2$, compared with $h$ for Euler-Maruyama.
+\end{itemize}
 
 
 
@@ -745,6 +907,16 @@ D.~T.~Gillespie, The mathematics of Brownian motion and Johnson noise, Am.\ J.\ 
 
 \bibitem{pavliotis}
 G.~A.~Pavliotis, {\it Stochastic Processes and Applications: Diffusion Processes, the Fokker-Planck and Langevin Equations}, Texts in Applied Mathematics, Vol.~60 (Springer, New York, 2014).
+
+\bibitem{alvarez}
+C.~E.~Alvarez, The moving bar problem: an electromechanical damped oscillator, manuscript (2026), Sec.~5.1.
+% TODO: replace by the published reference when available.
+
+\bibitem{sachs}
+M.~Sachs, B.~Leimkuhler, V.~Danos, Langevin dynamics with variable coefficients and nonconservative forces: from stationary states to numerical methods, Entropy {\bf 19}, 647 (2017).
+
+\bibitem{leimkuhler}
+B.~Leimkuhler, C.~Matthews, Rational construction of stochastic numerical methods for molecular sampling, Appl.\ Math.\ Res.\ Express {\bf 2013}, 34--56 (2013).
 
 \end{thebibliography}
 
