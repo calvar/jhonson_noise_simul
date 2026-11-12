@@ -611,6 +611,7 @@ From $dP_t/dt=GP_t$ we obtain the {\it backward Kolmogorov equation}
 \begin{align}
   \frac{du}{dt}&=Gu,\qquad u(0)=f.
 \end{align}
+Only $P_t$ is differentiated because $f$ has no explicit time dependence: $f_j$ is the value assigned to the fixed state $j$, and all the time dependence of $\mathbb{E}[f(X_t)|X_0=i]$ is carried by the weights $(P_t)_{ij}$.
 The probabilities of the states form a row vector $\pi(t)=(\pi_1(t),\dots,\pi_N(t))$, with $\pi_j(t)=\mathbb{P}(X_t=j)$, and $P_t$ acts on it from the right
 \begin{align}
   \pi_j(t)&=\sum_i\pi_i(0)(P_t)_{ij},\qquad\pi(t)=\pi(0)P_t.
