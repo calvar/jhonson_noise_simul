@@ -295,13 +295,13 @@ satisfies $A\nabla C=0$. $C$ is a {\it Casimir} of the bracket defined by $A$: i
   dx&=\frac{\partial H}{\partial p}dt,\qquad dp=-\frac{\partial H}{\partial x}dt,\qquad dC=-R\frac{\partial H}{\partial C}dt+\sqrt{2TR}\,dW.
   \label{xpc}
 \end{align}
-That is, $(x,p)$ is a canonical pair moving in the potential $U_C(x)$, without friction, while $C$ performs an overdamped Brownian motion with mobility $R$ in the same energy. This form is the key to the structure of the algorithm below.
+That is, $(x,p)$ is a canonical pair moving in the potential $U_C(x)$, without friction, while $C$ performs an overdamped Brownian motion with mobility $R$ in the same energy. This form is the key to the structure of the algorithm below. In particular, it shows that the drift of the bar must be taken at constant $C$, not at constant $\Phi$, which fixes the splitting (\ref{splitops}): the conservative part moves $(x,p)$ on a surface of constant $C$ as a single Hamiltonian degree of freedom, and only the dissipation and the noise move the system from one such surface to another. The force $-\lambda\Phi/L$ on the bar, which in (\ref{eomxpphi}) has the structure of a gyroscopic force, becomes part of the gradient $-U_C'(x)$, since $\partial_x|_C=\partial_x|_\Phi+\lambda\partial_\Phi$.
 
-{\bf Splitting of the generator:} Following the appendix, the generator of (\ref{eomxpphi}) is $Gf=b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf$, with $b=(A-K)\nabla H$ and $D_{\Phi\Phi}=g^2$. We split the energy as $H=H_1+H_2$, with $H_1=p^2/2M$ and $H_2=\Phi^2/2L(x)$, and take the flow of each part with the same matrix $A$. Then $G=\mathcal{L}_A+\mathcal{L}_B+\mathcal{L}_O$, with
+{\bf Splitting of the generator:} Following the appendix, the generator of (\ref{eomxpphi}) is $Gf=b_i\partial_if+\frac{1}{2}D_{ij}\partial_i\partial_jf$, with $b=(A-K)\nabla H$ and $D_{\Phi\Phi}=g^2$. We split the energy as $H=H_1+H_2$, with $H_1=p^2/2M$ and $H_2=\Phi^2/2L(x)$, and take the flow of each part with the same matrix $A$. Then $G=G_A+G_B+G_O$, with
 \begin{align}
-  \mathcal{L}_Af&=(A\nabla H_1)\cdot\nabla f=\frac{p}{M}\left(\frac{\partial f}{\partial x}+\lambda\frac{\partial f}{\partial\Phi}\right),\nonumber\\
-  \mathcal{L}_Bf&=(A\nabla H_2)\cdot\nabla f=F(x,\Phi)\frac{\partial f}{\partial p},\qquad F(x,\Phi)=\frac{L'\Phi^2}{2L^2}-\lambda\frac{\Phi}{L}=\frac{1}{2}L'I^2-\lambda I,\nonumber\\
-  \mathcal{L}_Of&=-\frac{R}{L}\Phi\frac{\partial f}{\partial\Phi}+\frac{g^2}{2}\frac{\partial^2f}{\partial\Phi^2},
+  G_Af&=(A\nabla H_1)\cdot\nabla f=\frac{p}{M}\left(\frac{\partial f}{\partial x}+\lambda\frac{\partial f}{\partial\Phi}\right),\nonumber\\
+  G_Bf&=(A\nabla H_2)\cdot\nabla f=F(x,\Phi)\frac{\partial f}{\partial p},\qquad F(x,\Phi)=\frac{L'\Phi^2}{2L^2}-\lambda\frac{\Phi}{L}=\frac{1}{2}L'I^2-\lambda I,\nonumber\\
+  G_Of&=-\frac{R}{L}\Phi\frac{\partial f}{\partial\Phi}+\frac{g^2}{2}\frac{\partial^2f}{\partial\Phi^2},
   \label{splitops}
 \end{align}
 where $I=\Phi/L(x)$. Adding the three drifts gives back (\ref{eomxpphi}). The flow of each part over a time $h$ is computed exactly:
@@ -322,12 +322,12 @@ where $I=\Phi/L(x)$. Adding the three drifts gives back (\ref{eomxpphi}). The fl
 \end{itemize}
 In the variables (\ref{xpc}), A is the drift $x\leftarrow x+hp/M$ at constant $C$, and B is the kick $p\leftarrow p-hU_C'(x)$, since $-U_C'=F$, so A and B are exactly the A and B parts of the standard BAOAB scheme for a particle in the potential $U_C$. The difference with (\ref{sachslangevin}) is that O acts on the variable $C$ instead of on the momentum.
 
-{\bf Phase-space volume and the Gibbs density:} The drifts of A and B are $A\nabla H_i$, with divergence $A_{ij}\partial_i\partial_jH_i=0$, since $A$ is antisymmetric, so both flows preserve phase-space volume, and each one conserves its own energy, $\nabla H_i\cdot A\nabla H_i=0$. Neither of them conserves $H$, however. For $\rho\propto e^{-H/T}$ and a divergence-free drift $b$, $\mathcal{L}^*\rho=-\nabla\cdot(b\rho)=(\rho/T)\,b\cdot\nabla H$, and
+{\bf Phase-space volume and the Gibbs density:} The drifts of A and B are $A\nabla H_i$, with divergence $A_{ij}\partial_i\partial_jH_i=0$, since $A$ is antisymmetric, so both flows preserve phase-space volume, and each one conserves its own energy, $\nabla H_i\cdot A\nabla H_i=0$. Neither of them conserves $H$, however. For $\rho\propto e^{-H/T}$ and the generator $G_bf=b\cdot\nabla f$ of a divergence-free drift $b$, $G_b^*\rho=-\nabla\cdot(b\rho)=(\rho/T)\,b\cdot\nabla H$, and
 \begin{align}
-  \mathcal{L}_A^*\rho&=\frac{\rho}{T}(A\nabla H_1)\cdot\nabla H_2=\frac{\rho}{T}\frac{p}{M}\left(\lambda I-\frac{1}{2}L'I^2\right),\nonumber\\
-  \mathcal{L}_B^*\rho&=\frac{\rho}{T}(A\nabla H_2)\cdot\nabla H_1=-\mathcal{L}_A^*\rho,
+  G_A^*\rho&=\frac{\rho}{T}(A\nabla H_1)\cdot\nabla H_2=\frac{\rho}{T}\frac{p}{M}\left(\lambda I-\frac{1}{2}L'I^2\right),\nonumber\\
+  G_B^*\rho&=\frac{\rho}{T}(A\nabla H_2)\cdot\nabla H_1=-G_A^*\rho,
 \end{align}
-where the second equality uses the antisymmetry of $A$. The bracket is the power transferred between the bar and the field, $v(\lambda I-\frac{1}{2}L'I^2)$: A transfers energy from the bar to the field and B returns it. Only the sum is zero, $(\mathcal{L}_A^*+\mathcal{L}_B^*)\rho=-\nabla\cdot(J^c)=0$, as found in Sec.~1.1 for the conservative current. Finally, $\mathcal{L}_O^*\rho=-\partial_\Phi J_\Phi$ with the current (\ref{jphi}), which vanishes identically by (\ref{fdr}). Therefore O leaves the Gibbs density invariant by itself, for every $x$, while A and B do so only together. This is the same situation as in the standard BAOAB scheme, and it means that the discrete scheme samples a density that differs from (\ref{gibbs}) by a small amount that vanishes as $h\to0$ (see the consistency checks below).
+where the second equality uses the antisymmetry of $A$. The bracket is the power transferred between the bar and the field, $v(\lambda I-\frac{1}{2}L'I^2)$: A transfers energy from the bar to the field and B returns it. Only the sum is zero, $(G_A^*+G_B^*)\rho=-\nabla\cdot(J^c)=0$, as found in Sec.~1.1 for the conservative current. Finally, $G_O^*\rho=-\partial_\Phi J_\Phi$ with the current (\ref{jphi}), which vanishes identically by (\ref{fdr}). Therefore O leaves the Gibbs density invariant by itself, for every $x$, while A and B do so only together. This is the same situation as in the standard BAOAB scheme, and it means that the discrete scheme samples a density that differs from (\ref{gibbs}) by a small amount that vanishes as $h\to0$ (see the consistency checks below).
 
 {\bf The exact O-step:} For frozen $x$ write $\kappa=R(x)/L(x)$. The solution of $d\Phi=-\kappa\Phi\,dt+g\,dW$ is
 \begin{align}
@@ -386,7 +386,7 @@ Each step evaluates $L$ and $R$ at $x_m$ and $L$ and $L'$ at $x_{i+1}$; the valu
 \item {\it Deterministic limit, $T=0$, $R>0$.} The O-step is $\Phi\leftarrow e^{-hR/L}\Phi$, the exact flow of the dissipation, and the scheme is a symmetric (Strang) composition of exact flows, of second order.
 \item {\it Weak order.} By the Baker-Campbell-Hausdorff formula the symmetric composition satisfies
   \begin{align}
-    e^{\frac{h}{2}\mathcal{L}_B}e^{\frac{h}{2}\mathcal{L}_A}e^{h\mathcal{L}_O}e^{\frac{h}{2}\mathcal{L}_A}e^{\frac{h}{2}\mathcal{L}_B}&=e^{hG+O(h^3)},
+    e^{\frac{h}{2}G_B}e^{\frac{h}{2}G_A}e^{hG_O}e^{\frac{h}{2}G_A}e^{\frac{h}{2}G_B}&=e^{hG+O(h^3)},
   \end{align}
   so we expect weak order two on finite time intervals and an error of order $h^2$ in equilibrium averages, assuming smooth $L(x)>0$, $R(x)>0$ and ergodicity. For the standard Langevin equation with constant coefficients this is proved in \cite{leimkuhler}, where it is also shown that the error of BAOAB in configurational averages is exceptionally small (its leading term vanishes in the limit of large friction, and the configurational sampling is exact for a harmonic potential). Those finer results rely on O acting on the momentum and do not carry over here, where O acts on $C$. For the present system, with $x$-dependent coefficients and the coupling $\lambda$, the order two of the bias is expected, not proved.
 \item {\it Equilibrium.} The averages $\langle Mv^2|x\rangle=\langle L(x)I^2|x\rangle=T$ of Sec.~\ref{sec:movingbar} are reproduced up to an error of order $h^2$, compared with order $h$ for the Euler-Maruyama scheme.
