@@ -353,7 +353,12 @@ that is, a temperature error of order $(\kappa h/K)^2$, which vanishes only as $
   p_{i+1}&=p_{i+1/2}+\frac{h}{2}F(x_{i+1},\Phi_{i+1}),
   \label{algxpphi}
 \end{align}
-with $F$ given in (\ref{splitops}) and $\xi_i\sim N(0,1)$ independent at each step. Since the two A half-steps have the same velocity, $x_m=(x_i+x_{i+1})/2$ is exactly the midpoint of the drift, the same point, Eq.~(86) of \cite{alvarez}, at which the circuit is updated there. In the variables $(x,v,I)$ of (\ref{eomdimless}), with $I=\Phi/L(x)$ recomputed after every substep that changes $x$ or $\Phi$, the same step reads:
+where the force on the bar is, from (\ref{splitops}),
+\begin{align}
+  F(x,\Phi)=\frac{L'(x)\Phi^2}{2L(x)^2}-\lambda\frac{\Phi}{L(x)},
+  \label{forcexphi}
+\end{align}
+and $\xi_i\sim N(0,1)$ independent at each step. Since the two A half-steps have the same velocity, $x_m=(x_i+x_{i+1})/2$ is exactly the midpoint of the drift, the same point, Eq.~(86) of \cite{alvarez}, at which the circuit is updated there. In the variables $(x,v,I)$ of (\ref{eomdimless}), with $I=\Phi/L(x)$ recomputed after every substep that changes $x$ or $\Phi$, the same step reads:
 \begin{enumerate}
 \item Half kick:
   \begin{align}
@@ -412,6 +417,80 @@ with statistical errors of about $0.002$. The error of $\langle LI^2\rangle$ dec
 \item {\it Small $x$.} As $x\to0$, $L\to0$ and $\omega\to\infty$, and with $\Phi\sim\sqrt{TL}$ the current $I\sim\sqrt{T/L}$ and the mean force $\frac{1}{2}L'\langle I^2\rangle=TL'/2L$ diverge. A lower bound on $x$ (a wall) or a time step adapted to $L(x)$ is needed there.
 \item {\it Confinement.} A global equilibrium requires confining the bar (Sec.~\ref{sec:movingbar}). A smooth confining potential enters through the kicks and keeps all the properties above, and the marginal density becomes $\propto\sqrt{L(x)}e^{-U_w(x)/T}$. A hard wall can be implemented by reflecting $x$ and $v$ during A, but then $\Phi$ must be set to $C+\lambda x$ at the reflected position to keep the Casimir, and the scheme loses its second order at the collisions.
 \item {\it Tests.} (a) For $R=T=0$, the energy error should scale as $h^2$ and stay bounded, and $\Phi-\lambda x$ should be constant to round-off. (b) For $T>0$, histograms of $v$ and $I$ in bins of $x$ should be Gaussian, with $\langle Mv^2|x\rangle=\langle L(x)I^2|x\rangle=T$. (c) The equilibrium averages should converge as $h^2$, compared with $h$ for Euler-Maruyama.
+\end{itemize}
+
+\subsection{Heat exchange and energy balance}\label{sec:heat}
+The only interaction of the system (bar plus field) with the thermal bath is through the resistance: the bath removes energy by Joule heating and returns it through the Johnson emf, the last term of the equation for $I$. In this section we define the heat exchanged with the bath along a single trajectory, following the stochastic energetics of Sekimoto \cite{sekimoto}, and show how it is computed in the algorithm (\ref{algxpphi}), so that the energy balance can be tracked during the dynamics. We use the dimensionless units of Sec.~\ref{sec:baoab}, and the heat $Q$ is the energy {\it absorbed} by the system from the bath.
+
+{\bf First law along a trajectory:} The energy $H=p^2/2M+\Phi^2/2L(x)$ is a function of the state, and its change along a trajectory of (\ref{eomxpphi}) follows from It\^o's formula (\ref{ito}). The last equation of (\ref{eomxpphi}) reads
+\begin{align}
+  d\Phi&=\left(\lambda v-RI\right)dt+g\,dW.
+\end{align}
+Since $dx$ and $dp$ contain no noise, all second order products involving them are $o(dt)$: $dx^2$, $dp^2$ and $dx\,dp$ are of order $dt^2$, and $dx\,d\Phi$ and $dp\,d\Phi$ of order $dt^{3/2}$. The mixed derivative $\partial^2H/\partial x\partial\Phi=-\Phi L'/L^2$ is not zero, but its term drops out for this reason. Only $(d\Phi)^2=g^2dW^2+O(dt^{3/2})=g^2dt$ survives, by (\ref{itorules}), so the only non-zero component of the diffusion matrix is $D_{\Phi\Phi}=g^2$. With $\partial^2H/\partial\Phi^2=1/L$, the second order term of the expansion of $dH$ is
+\begin{align}
+  \frac{1}{2}\frac{\partial^2H}{\partial\Phi^2}(d\Phi)^2&=\frac{g^2}{2L}dt.
+\end{align}
+So
+\begin{align}
+  dH&=\frac{\partial H}{\partial x}dx+\frac{\partial H}{\partial p}dp+\frac{\partial H}{\partial\Phi}d\Phi+\frac{g^2}{2L}dt\nonumber\\
+  &=-\frac{1}{2}L'I^2v\,dt+v\left(\frac{1}{2}L'I^2-\lambda I\right)dt+I\left[(\lambda v-RI)dt+g\,dW\right]+\frac{g^2}{2L}dt\nonumber\\
+  &=\left(\frac{g^2}{2L}-RI^2\right)dt+Ig\,dW.
+  \label{dH}
+\end{align}
+The conservative terms cancel, as they must since $A$ is antisymmetric: the power $v(\frac{1}{2}L'I^2-\lambda I)$ delivered to the bar by the field is exactly the power taken from the field. The applied field $B_0$ is constant and there is no other external agent, so no work is done on the system, and the whole change of $H$ is heat,
+\begin{align}
+  dH&=\delta Q,\qquad\delta Q=I\circ\left(-RI\,dt+g\,dW\right)=-RI^2dt+I\circ g\,dW,
+  \label{firstlaw}
+\end{align}
+where $\circ$ is the Stratonovich product, i.e., the integrand is evaluated at the midpoint of the time interval. It agrees with (\ref{dH}), since $I\circ g\,dW=Ig\,dW+\frac{g^2}{2L}dt$, see (\ref{heatparts}) below. This is Sekimoto's definition: the heat is the work done on the system by the forces of the bath, the friction $-R\,\partial_\Phi H$ and the noise $g\Gamma(t)$, along the displacement $d\Phi$, with the conjugate ``velocity'' $\partial_\Phi H=I$. It has two parts with a clear physical meaning:
+\begin{align}
+  \delta Q_J&=RI^2dt,\nonumber\\
+  \delta W_N&=I\circ g\,dW=Ig\,dW+\frac{g^2}{2L}dt=Ig\,dW+\frac{TR}{L}dt,\qquad\delta Q=\delta W_N-\delta Q_J,
+  \label{heatparts}
+\end{align}
+the Joule heat $\delta Q_J\ge0$ released to the bath, and the work $\delta W_N$ of the Johnson emf on the circuit. In terms of the current, $g\,dW/L$ is the white noise change of $I$ in (\ref{dI}), and $\delta W_N=LI\circ(g\,dW/L)$ is the change of the field energy $\frac{1}{2}LI^2$ produced by it at fixed $x$. The conversion from the Stratonovich to the It\^o product in (\ref{heatparts}) uses $\partial I/\partial\Phi=1/L$ and $g^2=2TR$, Eq.~(\ref{fdr}). The term $TR/L\,dt$ is essential: the It\^o product $Ig\,dW$ alone has zero mean and would describe a bath that only absorbs energy. Averaging,
+\begin{align}
+  \langle\delta Q_J\rangle=\langle RI^2\rangle dt,\qquad\langle\delta W_N\rangle=T\left\langle\frac{R}{L}\right\rangle dt,\qquad\langle\delta Q\rangle=\left\langle R\left(\frac{T}{L}-I^2\right)\right\rangle dt,
+\end{align}
+and since $\langle I^2|x\rangle=T/L(x)$ in equilibrium (Sec.~\ref{sec:movingbar}), the mean heat vanishes there: on average the Johnson emf injects exactly the energy that the resistance dissipates, although each one is of order $T\langle R/L\rangle$ per unit time, and $\delta Q$ fluctuates around zero. For the rails $R/L=2/\ln l$ is constant (Sec.~1.2), and the equilibrium rate of Joule heating is $2T/\ln l$. The heat released to the bath, $-\delta Q$, changes the entropy of the bath by $-\delta Q/T$.
+
+With a confining potential $U_w(x)$, $H$ includes $U_w$, its force is part of the conservative dynamics, and (\ref{firstlaw}) is unchanged. If an external agent did work on the system, for instance through a time-dependent $B_0$ or a force applied to the bar, its work $\delta W$ would be added, $dH=\delta W+\delta Q$.
+
+{\bf Heat in the BAOAB step:} In the splitting (\ref{splitops}) the bath enters only through the O-step, while A and B are the flows of the conservative part, which exchange energy between the bar and the field but do not touch the bath. Therefore the heat absorbed in step $i$ is the change of energy during O. Since O freezes $x$ at $x_m$ and $p$ at $p_{i+1/2}$, only the field energy changes, and with the notation of (\ref{algxpphi})
+\begin{align}
+  Q_i&=\frac{\Phi''^2-\Phi'^2}{2L(x_m)}=\frac{1}{2}L(x_m)\left(I''^2-I'^2\right),
+  \label{heatstep}
+\end{align}
+where $I'=\Phi'/L(x_m)$ and $I''=\Phi''/L(x_m)$ are the currents before and after the O-step, i.e., at steps 2 and 3 of the algorithm in the variables $(x,v,I)$. Since O is the exact solution of the Ornstein-Uhlenbeck process at frozen $x$, (\ref{heatstep}) is the exact value of $\int\delta Q$ over that flow, for any $h$, and it requires no additional evaluation of $L$ or $R$ and no additional random number. This is the definition of heat used for splitting integrators of Langevin dynamics by Sivak, Chodera and Crooks \cite{sivak}. From (\ref{ostep}) its conditional mean is
+\begin{align}
+  \left\langle Q_i\,\middle|\,\Phi'\right\rangle&=\frac{1-c^2}{2L(x_m)}\left(TL(x_m)-\Phi'^2\right),\qquad c=e^{-hR(x_m)/L(x_m)},
+\end{align}
+so the bath gives energy to the field when the field is colder than the bath, $\Phi'^2<TL$, and takes it when it is hotter, and the mean vanishes when $\Phi'$ is drawn from the conditional equilibrium. For $T=0$, $Q_i=-(1-c^2)\Phi'^2/2L\le0$ is the exact Joule loss of the frozen circuit.
+
+{\bf Shadow work:} The flows A and B conserve $H$ only together, in the limit $h\to0$ (Sec.~\ref{sec:baoab}). For finite $h$ the change of energy produced by the four conservative substeps of a step does not vanish, and it is called the {\it shadow work} \cite{sivak},
+\begin{align}
+  W_i&=H_{i+1}-H_i-Q_i,\qquad H_i=\frac{p_i^2}{2M}+\frac{\Phi_i^2}{2L(x_i)}.
+  \label{shadow}
+\end{align}
+It is a discretization error, not a physical work, and it vanishes as $h\to0$. Accumulating both along the trajectory,
+\begin{align}
+  Q(t_n)=\sum_{i=0}^{n-1}Q_i,\qquad W(t_n)=\sum_{i=0}^{n-1}W_i,\qquad H_n-H_0=Q(t_n)+W(t_n),
+  \label{energybalance}
+\end{align}
+the last relation holds identically, to round-off, and the energy balance of the exact dynamics, $H(t)-H(0)=Q(t)$, is satisfied by the simulation up to the shadow work. $W(t_n)$ is therefore the natural measure of the error of the energy balance. In the Hamiltonian limit $R=T=0$, $Q_i=0$ and $W(t_n)=H_n-H_0$ is the bounded, order $h^2$ energy error of the Verlet scheme. For $T>0$ the stationary state of the scheme has $\langle H_{i+1}-H_i\rangle=0$, so $\langle Q_i\rangle=-\langle W_i\rangle$: the scheme absorbs on average a small amount of heat per step, which compensates the mean shadow work and vanishes as $h\to0$. A mean heat per unit time that does not decrease with $h$ indicates an error in the implementation.
+
+{\bf Joule heat and work of the Johnson emf:} The exact O-step gives the sum $Q_i$ of the two parts of (\ref{heatparts}), but not each part separately, since they depend on the path of $\Phi$ between $\Phi'$ and $\Phi''$, which the exact step does not generate. The Joule heat is the time integral of the continuous function $R(x)I^2$, and it can be estimated by quadrature along the trajectory; the trapezoidal rule with the values at the end of each step gives
+\begin{align}
+  Q_{J,i}&\simeq\frac{h}{2}\left[R(x_i)I_i^2+R(x_{i+1})I_{i+1}^2\right],
+  \label{jouleheat}
+\end{align}
+and the work of the Johnson emf is then obtained from the balance, $W_{N,i}=Q_i+Q_{J,i}$, with the error of the quadrature. Unlike $Q_i$, the estimates (\ref{jouleheat}) and $W_{N,i}$ are not exact for finite $h$; if needed they can be refined by splitting the O-step into $K$ exact substeps, which produce intermediate values of $\Phi$ at frozen $x_m$, and applying the quadrature to the substeps. In equilibrium both accumulate at the mean rate $T\langle R/L\rangle$.
+
+{\bf Checks:}
+\begin{itemize}
+\item {\it Hamiltonian limit, $R=T=0$.} $Q_i=0$, and $W(t_n)=H_n-H_0$ stays bounded and scales as $h^2$.
+\item {\it Deterministic limit, $T=0$, $R>0$.} $Q(t_n)\le0$ decreases monotonically, $Q(t_n)\simeq-\sum_iQ_{J,i}$ up to the quadrature error, and $H_n-H_0-Q(t_n)=W(t_n)$ is of order $h^2$.
+\item {\it Equilibrium, $T>0$.} $\langle Q_i\rangle/h=-\langle W_i\rangle/h\to0$ as $h\to0$, $\sum_iQ_{J,i}/t_n\to T\langle R/L\rangle$ ($2T/\ln l$ for the rails), and the variance of $Q(t_n)$ grows linearly in time.
 \end{itemize}
 
 
@@ -775,6 +854,7 @@ In the {\it It\^o} interpretation $\sigma_{ik}$ is evaluated at the beginning of
 The increments of the Brownian motion have variance $\mathbb{E}[dW_kdW_l]=\delta_{kl}dt$, so $dW$ is of order $\sqrt{dt}$, and the terms of second order in $dW$ contribute to first order in $dt$. In the limit $dt\rightarrow 0$ the terms of higher order than $dt$ are negligible, which is summarized in the rules
 \begin{align}
   dW_kdW_l=\delta_{kl}dt,\qquad dW_kdt=0,\qquad dt^2=0.
+  \label{itorules}
 \end{align}
 Let $f(x)$ be a smooth function. Expanding $f(X_t)$ to second order in $dX$ and using (\ref{sde}) and the rules above gives {\it It\^o's formula}
 \begin{align}
@@ -918,6 +998,12 @@ M.~Sachs, B.~Leimkuhler, V.~Danos, Langevin dynamics with variable coefficients 
 
 \bibitem{leimkuhler}
 B.~Leimkuhler, C.~Matthews, Rational construction of stochastic numerical methods for molecular sampling, Appl.\ Math.\ Res.\ Express {\bf 2013}, 34--56 (2013).
+
+\bibitem{sekimoto}
+K.~Sekimoto, {\it Stochastic Energetics}, Lecture Notes in Physics, Vol.~799 (Springer, Berlin, 2010).
+
+\bibitem{sivak}
+D.~A.~Sivak, J.~D.~Chodera, G.~E.~Crooks, Using nonequilibrium fluctuation theorems to understand and correct errors in equilibrium and nonequilibrium simulations of discrete Langevin dynamics, Phys.\ Rev.\ X {\bf 3}, 011007 (2013).
 
 \end{thebibliography}
 
